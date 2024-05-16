@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'allauth',
     'allauth.account',
-    # social login 필요 시 추가
+    # social login
     'django.contrib.sites',
     'allauth.socialaccount',
     # allauth - kakao
@@ -54,8 +54,38 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-# social login 필요 시 추가
+# allauth site_id
 SITE_ID = 1
+
+# 로그인 후 리디렉션할 페이지
+LOGIN_REDIRECT_URL = 'home'
+# 로그아웃 후 리디렉션할 페이지
+ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
+# 로그아웃 버튼 클릭 시 자동 로그아웃
+ACCOUNT_LOGOUT_ON_GET = True
+
+# allauth - continue 버튼 생략
+# get 으로 사용하면 안됩니다.
+# SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# allauth backends
+AUTHENTICATION_BACKENDS = (
+    #Needed to login by username in Django admin, regardless of 'allauth'
+    'django.contrib.auth.backends.ModelBackend',
+    
+)
+
+SOCIALACCOUNT_PROVIDERS = {
+    'kakao': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 # DRF auth settings
 # Token 인증을 기본으로 사용하도록 설정
