@@ -1,12 +1,10 @@
 <template>
   <header>
-    <div>
-      <nav>
-        <RouterLink to="/">홈</RouterLink>
-        <RouterLink to="/">검색</RouterLink>
-        <RouterLink to="/">영화</RouterLink>
-        <RouterLink to="/">프로필</RouterLink>
-      </nav>
+    <div class="container">
+      <Nav />
+      <main>
+        <!-- 게시글 내용을 표시하는 부분 -->
+      </main>
     </div>
   </header>
   <RouterView />
@@ -14,8 +12,18 @@
 
 <script setup>
 import { RouterView, RouterLink } from 'vue-router'
+import Nav from '@/components/Nav.vue'
 </script>
 
 <style scoped>
+.container {
+  display: flex;
+}
 
+main {
+  margin-left: 130px;
+  flex: 1; /* 남은 영역을 모두 차지하도록 설정 */
+  padding: 20px; /* 선택 사항: 게시글 영역에 여백 추가 */
+  border: 1px solid #ccc; /* 선택 사항: 게시글 영역에 테두리 추가 */
+}
 </style>
