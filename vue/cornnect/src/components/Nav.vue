@@ -20,9 +20,8 @@
   <style scoped>
   .nav-ver {
     position: fixed; /* 고정 위치 설정 */
-    top: 0;
     width: 80px; /* 세로 너비의 20%로 설정 */
-    height: 100vh; /* 화면 높이의 100%로 설정 */
+    height: 80%; /* 화면 높이의 80%로 설정 */
     padding: 20px;
     display: flex;
     flex-direction: column;

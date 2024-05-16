@@ -3,16 +3,17 @@
     <div class="container">
       <Nav />
       <main>
-        <!-- 게시글 내용을 표시하는 부분 -->
+        <MainView />
       </main>
     </div>
   </header>
-  <RouterView />
+  <!-- <RouterView /> -->
 </template>
 
 <script setup>
-import { RouterView, RouterLink } from 'vue-router'
+// import { RouterView, RouterLink } from 'vue-router'
 import Nav from '@/components/Nav.vue'
+import MainPageView from '@/views/MainPageView.vue'
 </script>
 
 <style scoped>
