@@ -1,6 +1,9 @@
 <template>
     <div>
-        <p>안녕</p>
+        <div>
+            유저 영역
+        </div>
+        
     </div>
 </template>
 
