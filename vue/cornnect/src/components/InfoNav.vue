@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>욥</h1>
+        <p>안녕</p>
     </div>
 </template>
 
