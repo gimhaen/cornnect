@@ -1,13 +1,38 @@
 <template>
-    <div>
-        <p>안녕</p>
-    </div>
-</template>
+    <nav class="info-nav-ver">
+        <div class="info-nav-container">
+            <BoxOffice class="box-office" />
+            <Community class="community" />   
+        </div>        
+    </nav>
 
-<script setup>
+  </template>
+  
+  <script setup>
+  import BoxOffice from '@/components/BoxOffice.vue'
+  import Community from '@/components/Community.vue'
+  </script>
+  
+  <style scoped>
+    .info-nav-ver {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 
-</script>
+    border: 1px solid #ccc; /* 선택 사항: 게시글 영역에 테두리 추가 */
+  }
 
-<style scoped>
-
-</style>
+  .info-nav-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .box-office {
+  }
+  
+  .community {
+  }
+  </style>
+  
+  
