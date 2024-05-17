@@ -26,5 +26,6 @@ import InfoNav from '@/components/InfoNav.vue'
   padding: 20px; /* 선택 사항: 게시글 영역에 여백 추가 */
   border: 1px solid #ccc; /* 선택 사항: 게시글 영역에 테두리 추가 */
 }
+
 </style>
 

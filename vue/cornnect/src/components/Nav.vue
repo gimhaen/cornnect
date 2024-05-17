@@ -1,16 +1,17 @@
 <template>
-    <nav class="nav-ver">
-        <div class="container-nav">
-        <RouterLink to="/" class="nav-link">홈</RouterLink>
-        <RouterLink to="/" class="nav-link">검색</RouterLink>
-        <RouterLink to="/" class="nav-link">영화</RouterLink>
-        </div>
+        <nav class="nav-ver">
+          <div class="container-nav">
+            <RouterLink :to="{ name: 'main' }" class="nav-link">홈</RouterLink>
+            <RouterLink :to="{ name: 'movie' }" class="nav-link">검색</RouterLink>
+            <RouterLink :to="{ name: 'movie' }" class="nav-link">영화</RouterLink>
+          </div>
+  
+          <button class="write-button">작성하기</button>
+          <div class="container-nav profile-nav">
+            <RouterLink :to="{ name: 'profile' }" class="nav-link">프로필</RouterLink>
+          </div>
+        </nav>
 
-        <button class="write-button">작성하기</button>
-        <div class="container-nav profile-nav">
-        <RouterLink to="/" class="nav-link">프로필</RouterLink>
-        </div>
-    </nav>
   </template>
   
   <script setup>
