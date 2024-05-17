@@ -39,5 +39,6 @@ import InfoNav from '@/components/InfoNav.vue'
   border: 1px solid #ccc;
   margin-left: auto /* 우측 끝에 위치시킴 */
 }
+
 </style>
 
