@@ -1,14 +1,14 @@
 <template>
     <nav class="nav-ver">
         <div class="container-nav">
-        <RouterLink to="/" class="nav-link">홈</RouterLink>
-        <RouterLink to="/" class="nav-link">검색</RouterLink>
-        <RouterLink to="/" class="nav-link">영화</RouterLink>
+        <RouterLink :to="{ name: 'MainView' }" class="nav-link">홈</RouterLink>
+        <RouterLink :to="{ name: 'SearchView' }" class="nav-link">검색</RouterLink>
+        <RouterLink :to="{ name: 'MovieView' }" class="nav-link">영화</RouterLink>
         </div>
 
         <button class="write-button">작성하기</button>
         <div class="container-nav profile-nav">
-        <RouterLink to="/" class="nav-link">프로필</RouterLink>
+        <RouterLink :to="{ name: 'ProfileView' }" class="nav-link">프로필</RouterLink>
         </div>
     </nav>
   </template>
@@ -19,18 +19,17 @@
   
   <style scoped>
   .nav-ver {
-    position: fixed; /* 고정 위치 설정 */
-    width: 80px; /* 세로 너비의 20%로 설정 */
-    height: 80%; /* 화면 높이의 80%로 설정 */
-    padding: 20px;
+    position: fixed; /* 고정 */
+    width: 80px;
+    height: 80%;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* 세로로 배열 */
     align-items: center;
     text-align: center;
 
 
-    padding: 20px; /* 선택 사항: 게시글 영역에 여백 추가 */
-    border: 1px solid #ccc; /* 선택 사항: 게시글 영역에 테두리 추가 */
+    padding: 20px;
+    border: 1px solid #ccc;
   }
   
   .container-nav {
