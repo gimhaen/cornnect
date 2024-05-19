@@ -19,7 +19,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path('accounts/', include('dj_rest_auth.urls')),
-    path('accounts/signup/', include('dj_rest_auth.registration.urls'))
+    path('api/auth/', include('dj_rest_auth.urls')),
+    path('api/auth/signup/', include('dj_rest_auth.registration.urls')),
+    path('api/user/', include('accounts.urls')), # accounts 앱의 URL은 /api/user/ 경로로 연결
+    path('movies/', include('movies.urls'),)
 ]

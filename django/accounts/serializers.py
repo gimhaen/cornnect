@@ -1,11 +1,13 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+from .models import CustomUser
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'profile_pic']
 
-# User = get_user_model()
-
-# class UserSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = User
-#         fields = ('pk', 'username', 'is_superuser')
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'profile_pic']
+        read_only_fields = ['email']
