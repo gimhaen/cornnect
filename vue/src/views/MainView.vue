@@ -6,8 +6,8 @@
 </template>
 
 <script setup>
-import ArticleList from '@/components/ArticleList.vue'
-import InfoNav from '@/components/InfoNav.vue'
+import ArticleList from '@/components/MainList.vue'
+import InfoNav from '@/components/layout/InfoNav.vue'
 </script>
 
 <style scoped>
