@@ -5,6 +5,12 @@ import UserView from '@/views/UserView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LogInView from '@/views/LogInView.vue'
 import { useAuthStore } from '@/stores/auth.js'
+import { createApp } from 'vue'
+import BoxOffice from '@/components/BoxOffice.vue'
+
+const app = createApp({})
+app.component('BoxOffice', BoxOffice)
+app.mount('#app')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +30,11 @@ const router = createRouter({
       name: 'user',
       component: UserView
       
+    },
+    {
+      path: '/box-office',
+      name: 'BoxOffice',
+      component: BoxOffice
     },
     {
       path: '/signup',
