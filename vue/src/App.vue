@@ -4,8 +4,15 @@
       <NavView />
       <main>
       </main>
-      <RouterLink to="/signup">SignUp</RouterLink> 
-      <RouterLink to="/login ">LogIn</RouterLink>
+      <ul>
+        <li v-if="!isAuthenticated">
+          <RouterLink to="/signup">SignUp</RouterLink>
+          <RouterLink to="/login">LogIn</RouterLink>
+        </li>
+        <li v-else>
+          <LogoutButton />
+        </li>
+      </ul>
     </div>
   </header>
   <RouterView />
@@ -14,7 +21,7 @@
 <script setup>
 import { computed } from 'vue'
 import { RouterView, RouterLink } from 'vue-router'
-import NavView from '@/views/NavView.vue'
+import NavView from '@/components/layout/SideNav.vue'
 import { useAuthStore } from './stores/auth';
 const store = useAuthStore()
 const isAuthenticated = computed(() => {
@@ -33,4 +40,30 @@ main {
   padding: 0; /* 선택 사항: 게시글 영역에 여백 추가 */
   border: 1px solid #ccc; /* 선택 사항: 게시글 영역에 테두리 추가 */
 }
+</style>
+
+<template>
+  <header>
+    <div class="container">
+      <NavView />
+      <main></main>
+      
+    </div>
+  </header>
+  <RouterView />
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import { RouterView, RouterLink } from 'vue-router'
+import NavView from '@/views/NavView.vue'
+import LogoutButton from '@/components/LogoutButton.vue'
+import { useAuthStore } from './stores/auth'
+
+const store = useAuthStore()
+const isAuthenticated = computed(() => store.isAuthenticated)
+</script>
+
+<style scoped>
+/* ... */
 </style>

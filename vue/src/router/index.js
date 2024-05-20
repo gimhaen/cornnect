@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainView from '@/views/MainView.vue'
 import MovieView from '@/views/MovieView.vue'
-import ProfileView from '@/views/ProfileView.vue'
+import ProfileView from '@/views/UserView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LogInView from '@/views/LogInView.vue'
 import { useAuthStore } from '@/stores/auth.js'
