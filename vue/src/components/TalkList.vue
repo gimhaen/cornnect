@@ -1,11 +1,11 @@
 <template>
     <div>
-        <ArticleListItem />
+        <h1>무비톡 리스트</h1>
     </div>
 </template>
 
 <script setup>
-import ArticleListItem from '@/components/MainListItem.vue'
+
 </script>
 
 <style scoped>

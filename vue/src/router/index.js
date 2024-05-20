@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainView from '@/views/MainView.vue'
-import MovieView from '@/views/MovieView.vue'
-import ProfileView from '@/views/UserView.vue'
+import SearchView from '@/views/SearchView.vue'
+import UserView from '@/views/UserView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import LogInView from '@/views/LogInView.vue'
 import { useAuthStore } from '@/stores/auth.js'
@@ -15,14 +15,14 @@ const router = createRouter({
       component: MainView
     },
     {
-      path: '/movie',
-      name: 'movie',
-      component: MovieView
+      path: '/search/',
+      name: 'search',
+      component: SearchView
     },
     {
-      path: '/profile',
-      name: 'profile',
-      component: ProfileView
+      path: '/user',
+      name: 'user',
+      component: UserView
       
     },
     {
@@ -50,11 +50,11 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from) => {
-  const store = useAuthStore()
-  if (to.name != 'login' && to.name != 'signup' && !store.isAuthenticated ) {
-    return { name: 'login' }
-  }
-})
+// router.beforeEach((to, from) => {
+//   const store = useAuthStore()
+//   if (to.name != 'login' && to.name != 'signup' && !store.isAuthenticated ) {
+//     return { name: 'login' }
+//   }
+// })
 
 export default router

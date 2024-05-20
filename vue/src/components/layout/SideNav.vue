@@ -2,13 +2,13 @@
         <nav class="nav-ver">
           <div class="container-nav">
             <RouterLink :to="{ name: 'main' }" class="nav-link">홈</RouterLink>
-            <RouterLink :to="{ name: 'movie' }" class="nav-link">검색</RouterLink>
-            <RouterLink :to="{ name: 'movie' }" class="nav-link">영화</RouterLink>
+            <RouterLink :to="{ name: 'search' }" class="nav-link">검색</RouterLink>
+            <RouterLink to="/" class="nav-link">위시리스트</RouterLink>
           </div>
   
           <button class="write-button">작성하기</button>
-          <div class="container-nav profile-nav">
-            <RouterLink :to="{ name: 'profile' }" class="nav-link">프로필</RouterLink>
+          <div class="container-nav user-nav">
+            <RouterLink :to="{ name: 'user' }" class="nav-link">프로필</RouterLink>
           </div>
           <div>
 
@@ -19,8 +19,7 @@
   
   <script setup>
   import { RouterView, RouterLink } from 'vue-router'
-  import axios from 'axios'
-
+ 
   </script>
   
   <style scoped>
@@ -54,7 +53,7 @@
     /* align-self: flex-start; 버튼이 왼쪽에 위치하도록 설정 */
   }
 
-  .profile-nav {
+  .user-nav {
     margin-top: auto;
   }
   </style>
