@@ -31,7 +31,7 @@ class Director(models.Model):
     def __str__(self):
         return self.name
 
-
+# 무비톡
 class MovieTalk(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='talks')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='talks')
@@ -40,6 +40,26 @@ class MovieTalk(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.movie.title}"
+
+class MovieTalkReply(models.Model):
+    movie_talk = models.ForeignKey('MovieTalk', on_delete=models.CASCADE, related_name='replies')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='replies')
+    content = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.movie_talk.content[:10]}..."
+
+
+class MovieTalkLike(models.Model):
+    movie_talk = models.ForeignKey('MovieTalk', on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} liked {self.movie_talk.content[:10]}..."
+
 
 
 class Wishlist(models.Model):
@@ -67,7 +87,7 @@ class Review(models.Model):
         return f"{self.user.username} - {self.movie.title}"
 
 
-class LikeReview(models.Model):
+class ReviewLike(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='likes')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_reviews')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -76,7 +96,7 @@ class LikeReview(models.Model):
         return f"{self.user.username} liked {self.review.movie.title}"
 
 
-class ReviewComment(models.Model):
+class ReviewReply(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     content = models.CharField(max_length=500)
