@@ -5,17 +5,9 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
-<<<<<<< HEAD
 from .models import Movie, Actor, Director, Genre
 from .serializers import MovieSerializer, GenreSerializer
 import pprint
-=======
-from .models import Movie
-import requests
-from django.conf import settings
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
->>>>>>> 6602f8146e746d1c43279ad63c177c52fe02de33
 
 def movie_list(request):
     movies = Movie.objects.all()

@@ -7,8 +7,16 @@
     </div>
 
     <button class="write-button" @click="openModal">작성하기</button>
-    <div class="container-nav user-nav">
-      <RouterLink :to="{ name: 'user' }" class="nav-link">프로필</RouterLink>
+    <div v-if="!isAuthenticated">
+      <RouterLink :to="{ name: 'login' }" class="nav-link"
+        >로그인/회원가입</RouterLink
+      >
+    </div>
+    <div v-else>
+      <a href="#" @click="logOut" class="nav-link">Logout</a>
+      <div class="container-nav user-nav">
+        <RouterLink :to="{ name: 'user' }" class="nav-link">프로필</RouterLink>
+      </div>
     </div>
     <div>
       <!-- 별점 관련 코드 -->
@@ -17,26 +25,36 @@
     </div>
   </nav>
 </template>
-  
+
 <script setup>
 // import { RouterView, RouterLink } from 'vue-router'
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import WritePage from '@/components/WritePage.vue'
-import { useArticleStore } from '@/stores/article.js';
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import WritePage from "@/components/WritePage.vue";
+import { useArticleStore } from "@/stores/article.js";
+import { useAuthStore } from "@/stores/auth";
 const articleStore = useArticleStore();
 
-
-// 모달 열고 닫는 showModal 
-const showModal = ref(false)
+// 모달 열고 닫는 showModal
+const showModal = ref(false);
 
 // 클릭시 모달 열리는 함수
 const openModal = () => {
-  articleStore.showModal = true
-}
+  articleStore.showModal = true;
+};
 
 // 클릭시 모달 닫히는 함수
 
+// 로그아웃 함수
+const authStore = useAuthStore();
+const router = useRouter();
+
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+const logOut = () => {
+  authStore.logOut();
+  router.push({ name: "login" });
+};
 </script>
 
 <style scoped>
@@ -49,7 +67,6 @@ const openModal = () => {
   flex-direction: column;
   align-items: center;
   text-align: center;
-
 
   padding: 20px; /* 선택 사항: 게시글 영역에 여백 추가 */
   border: 1px solid #ccc; /* 선택 사항: 게시글 영역에 테두리 추가 */
@@ -74,4 +91,3 @@ const openModal = () => {
   margin-top: auto;
 }
 </style>
-  

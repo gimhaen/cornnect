@@ -1,64 +1,63 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import MainView from '@/views/MainView.vue'
-import SearchView from '@/views/SearchView.vue'
-import UserView from '@/views/UserView.vue'
-import SignUpView from '@/views/SignUpView.vue'
-import LogInView from '@/views/LogInView.vue'
-import { useAuthStore } from '@/stores/auth.js'
-import { createApp } from 'vue'
-import BoxOffice from '@/components/BoxOffice.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import MainView from "@/views/MainView.vue";
+import SearchView from "@/views/SearchView.vue";
+import UserView from "@/views/UserView.vue";
+import SignUpView from "@/views/SignUpView.vue";
+import LogInView from "@/views/LogInView.vue";
+import { useAuthStore } from "@/stores/auth.js";
+import { createApp } from "vue";
+import BoxOffice from "@/components/BoxOffice.vue";
 
-const app = createApp({})
-app.component('BoxOffice', BoxOffice)
-app.mount('#app')
+const app = createApp({});
+app.component("BoxOffice", BoxOffice);
+app.mount("#app");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'main',
-      component: MainView
+      path: "/",
+      name: "main",
+      component: MainView,
     },
     {
-      path: '/search/',
-      name: 'search',
-      component: SearchView
+      path: "/search/",
+      name: "search",
+      component: SearchView,
     },
     {
-      path: '/user',
-      name: 'user',
-      component: UserView
-      
+      path: "/user",
+      name: "user",
+      component: UserView,
     },
     {
-      path: '/box-office',
-      name: 'BoxOffice',
-      component: BoxOffice
+      path: "/box-office",
+      name: "BoxOffice",
+      component: BoxOffice,
     },
     {
-      path: '/signup',
-      name: 'signup',
+      path: "/signup",
+      name: "signup",
       component: SignUpView,
       beforeEnter: (to, from) => {
-        const store = useAuthStore()
+        const store = useAuthStore();
         if (store.isAuthenticated) {
-          return { name: 'login' }
+          return { name: "login" };
         }
-      }
+      },
     },
     {
-      path: '/login',
-      name: 'login',
+      path: "/login",
+      name: "login",
       component: LogInView,
       beforeEnter: (to, from) => {
-        const store = useAuthStore()
+        const store = useAuthStore();
         if (store.isAuthenticated) {
-          return { name: 'main' }
+          return { name: "main" };
         }
-      }
+      },
     },
-  ]
-})
+  ],
+});
 
-export default router
+export default router;
