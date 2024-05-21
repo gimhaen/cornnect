@@ -122,12 +122,8 @@ WSGI_APPLICATION = 'cornnect.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cornnect',
-        'USER': 'root',
-        'PASSWORD': '0000',
-        'HOST': 'localhost', # MySQL 호스트
-        'PORT': '3306',      # MySQL 포트 (기본값은 3306)
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
