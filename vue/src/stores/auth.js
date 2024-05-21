@@ -21,10 +21,11 @@ export const useAuthStore = defineStore('auth', () => {
     })
     .then(res => {
         token.value = res.data.key
+        console.log(token.value)
         console.log(res.data)
         isAuthenticated.value = true
         user.value = res.data.user
-        router.push({name: 'main'})
+        router.push({name: 'login'})
     
     })
     .catch(err => {
@@ -56,9 +57,9 @@ export const useAuthStore = defineStore('auth', () => {
     axios({
       method: 'post',
       url: 'http://127.0.0.1:8000/api/auth/logout/',
-      headers: {
-        'Authorization': `Token ${token.value}`
-      }
+      // headers: {
+      //   'Authorization': `Token ${token.value}`
+      // }
     })
     .then(res => {
       token.value = ''

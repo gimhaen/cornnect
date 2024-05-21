@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('dj_rest_auth.urls')),
     path('api/auth/signup/', include('dj_rest_auth.registration.urls')),
+    # path('api/auth/logout/', include('dj_rest_auth.registration.urls')),
     path('api/user/', include('accounts.urls')), # accounts 앱의 URL은 /api/user/ 경로로 연결
     path('movies/', include('movies.urls')),
     path('api/token/', obtain_auth_token, name='api_token_auth'),  # 토큰 얻기 엔드포인트

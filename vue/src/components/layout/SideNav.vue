@@ -1,60 +1,73 @@
 <template>
-        <nav class="nav-ver">
-          <div class="container-nav">
-            <RouterLink :to="{ name: 'main' }" class="nav-link">홈</RouterLink>
-            <RouterLink :to="{ name: 'search' }" class="nav-link">검색</RouterLink>
-            <RouterLink to="/" class="nav-link">위시리스트</RouterLink>
-          </div>
-  
-          <button class="write-button">작성하기</button>
-          <div class="container-nav user-nav">
-            <RouterLink :to="{ name: 'user' }" class="nav-link">프로필</RouterLink>
-          </div>
-          <div>
+      <nav class="nav-ver">
+        <div class="container-nav">
+          <RouterLink :to="{ name: 'main' }" class="nav-link">홈</RouterLink>
+          <RouterLink :to="{ name: 'search' }" class="nav-link">검색</RouterLink>
+          <RouterLink to="/" class="nav-link">위시리스트</RouterLink>
+        </div>
 
-          </div>
-        </nav>
+        <button class="write-button">작성하기</button>
+        <div class="container-nav user-nav">
+          <RouterLink v-if="!isAuthenticated" :to="{ name: 'signup' }" class="nav-link">회원가입</RouterLink>
+          <RouterLink v-if="!isAuthenticated" :to="{ name: 'login' }" class="nav-link">로그인</RouterLink>
+          <RouterLink v-if="isAuthenticated" :to="{ name: 'user' }" class="nav-link">프로필</RouterLink>
+          <button v-if="isAuthenticated" @click="logout">로그아웃</button>
+        </div>
+        <div>
+        </div>
+      </nav>
 
-  </template>
-  
-  <script setup>
-  import { RouterView, RouterLink } from 'vue-router'
- 
-  </script>
-  
-  <style scoped>
-  .nav-ver {
-    position: fixed; /* 고정 위치 설정 */
-    width: 80px; /* 세로 너비의 20%로 설정 */
-    height: 80%; /* 화면 높이의 80%로 설정 */
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+</template>
 
+<script setup>
+import { computed } from 'vue'
+import { RouterView, RouterLink, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
-    padding: 20px; /* 선택 사항: 게시글 영역에 여백 추가 */
-    border: 1px solid #ccc; /* 선택 사항: 게시글 영역에 테두리 추가 */
-  }
-  
-  .container-nav {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .nav-link {
-    margin-bottom: 20px;
-  }
-  
-  .write-button {
-    width: auto; /* 너비 자동 조정 */
-    /* margin-top: auto; 버튼을 아래로 이동 */
-    /* align-self: flex-start; 버튼이 왼쪽에 위치하도록 설정 */
+const router = useRouter()
+const authStore = useAuthStore()
+
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+
+const logout = () => {
+  authStore.logOut()
+  router.push('/')
   }
 
-  .user-nav {
-    margin-top: auto;
-  }
-  </style>
-  
+</script>
+
+<style scoped>
+.nav-ver {
+  position: fixed; /* 고정 위치 설정 */
+  width: 80px; /* 세로 너비의 20%로 설정 */
+  height: 80%; /* 화면 높이의 80%로 설정 */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+
+  padding: 20px; /* 선택 사항: 게시글 영역에 여백 추가 */
+  border: 1px solid #ccc; /* 선택 사항: 게시글 영역에 테두리 추가 */
+}
+
+.container-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-link {
+  margin-bottom: 20px;
+}
+
+.write-button {
+  width: auto; /* 너비 자동 조정 */
+  /* margin-top: auto; 버튼을 아래로 이동 */
+  /* align-self: flex-start; 버튼이 왼쪽에 위치하도록 설정 */
+}
+
+.user-nav {
+  margin-top: auto;
+}
+</style>

@@ -43,7 +43,7 @@ const router = createRouter({
       beforeEnter: (to, from) => {
         const store = useAuthStore()
         if (store.isAuthenticated) {
-          return { name: 'main' }
+          return { name: 'login' }
         }
       }
     },
@@ -59,13 +59,6 @@ const router = createRouter({
       }
     },
   ]
-})
-
-router.beforeEach((to, from) => {
-  const store = useAuthStore()
-  if (to.name != 'login' && to.name != 'signup' && !store.isAuthenticated ) {
-    return { name: 'login' }
-  }
 })
 
 export default router
