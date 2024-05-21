@@ -19,6 +19,7 @@ class Movie(models.Model):
     
 
 class Actor(models.Model):
+    tmdb_id = models.BigIntegerField(default=0)
     name = models.CharField(max_length=100)
     profile_image = models.ImageField(upload_to='actor_profiles/', null=True, blank=True)
 
@@ -27,6 +28,7 @@ class Actor(models.Model):
 
 
 class Director(models.Model):
+    tmdb_id = models.BigIntegerField(default=0)
     name = models.CharField(max_length=100)
     profile_image = models.ImageField(upload_to='director_profiles/', null=True, blank=True)
 
