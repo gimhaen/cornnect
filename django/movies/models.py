@@ -3,17 +3,17 @@ from django.conf import settings
 
 # 영화
 class Movie(models.Model):
+    tmdb_id = models.BigIntegerField()
     title = models.CharField(max_length=100)
-    description = models.TextField()
-    genre = models.CharField(max_length=50)
+    description = models.TextField(blank=True, null=True)
+    genre = models.ManyToManyField('Genre', related_name='movies')
     release_year = models.IntegerField()
     running_time = models.IntegerField()
-    director = models.ForeignKey('Director', on_delete=models.CASCADE, related_name='movies')
-    actors = models.ManyToManyField('Actor', related_name='movies')
-    poster_image = models.ImageField(upload_to='movie_posters/')
+    director = models.ForeignKey('Director', on_delete=models.CASCADE, related_name='movies', null=True, blank=True)
+    actors = models.ManyToManyField('Actor', related_name='movies', null=True, blank=True)
+    poster_image = models.CharField(max_length=300)
     likes_count = models.IntegerField(default=0)
     talks_count = models.IntegerField(default=0)
-
     def __str__(self):
         return self.title
     
@@ -32,6 +32,9 @@ class Director(models.Model):
     def __str__(self):
         return self.name
 
+class Genre(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
 
 class MovieTalk(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='talks')
