@@ -1,5 +1,6 @@
 <template>
   <div class="main-container">
+    <WriteModal />
     <div class="article-container">
       <MainList class="article-list" />
     </div>
@@ -8,6 +9,7 @@
 </template>
 
 <script setup>
+import WriteModal from '@/components/WritePage.vue'
 import MainList from '@/components/MainList.vue'
 import InfoNav from '@/components/layout/InfoNav.vue'
 </script>
