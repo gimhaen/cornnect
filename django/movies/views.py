@@ -1,6 +1,9 @@
-<<<<<<< HEAD
 from django.shortcuts import render, get_object_or_404
 from .models import Movie
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
 
 def movie_list(request):
     movies = Movie.objects.all()
@@ -15,12 +18,7 @@ def movie_detail(request, movie_id):
         'movie': movie,
     }
     return render(request, 'movies/movie_detail.html', context)
-=======
 # movies/views.py
-import requests
-from django.conf import settings
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
 
 @api_view(['GET'])
 def box_office(request):
@@ -36,4 +34,3 @@ def box_office(request):
     print(response)
     data = response.json()
     return JsonResponse(data)
->>>>>>> ongyeom

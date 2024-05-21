@@ -61,11 +61,11 @@ const router = createRouter({
   ]
 })
 
-// router.beforeEach((to, from) => {
-//   const store = useAuthStore()
-//   if (to.name != 'login' && to.name != 'signup' && !store.isAuthenticated ) {
-//     return { name: 'login' }
-//   }
-// })
+router.beforeEach((to, from) => {
+  const store = useAuthStore()
+  if (to.name != 'login' && to.name != 'signup' && !store.isAuthenticated ) {
+    return { name: 'login' }
+  }
+})
 
 export default router
