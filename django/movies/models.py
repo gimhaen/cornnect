@@ -25,6 +25,7 @@ class Actor(models.Model):
     def __str__(self):
         return self.name
 
+
 class Director(models.Model):
     name = models.CharField(max_length=100)
     profile_image = models.ImageField(upload_to='director_profiles/', null=True, blank=True)
@@ -46,15 +47,16 @@ class MovieTalk(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.movie.title}"
 
+
 class MovieTalkReply(models.Model):
     movie_talk = models.ForeignKey(MovieTalk, on_delete=models.CASCADE, related_name='replies')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='replies')
     content = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
-    # updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.movie_talk.content[:10]}..."
+
 
 class MovieTalkLike(models.Model):
     movie_talk = models.ForeignKey(MovieTalk, on_delete=models.CASCADE, related_name='likes')
@@ -64,6 +66,7 @@ class MovieTalkLike(models.Model):
     def __str__(self):
         return f"{self.user.username} liked {self.movie_talk.content[:10]}..."
 
+
 class Wishlist(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='wishlisted')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='wishlisted_movies')
@@ -71,6 +74,7 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return f"{self.user.username} added {self.movie.title} to their wishlist"
+
 
 class Review(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
@@ -86,6 +90,7 @@ class Review(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.movie.title}"
 
+
 class ReviewLike(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='likes')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='liked_reviews')
@@ -93,6 +98,7 @@ class ReviewLike(models.Model):
 
     def __str__(self):
         return f"{self.user.username} liked {self.review.movie.title}"
+
 
 class ReviewReply(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')

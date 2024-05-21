@@ -1,38 +1,41 @@
 <template>
-      <nav class="nav-ver">
-        <div class="container-nav">
-          <RouterLink :to="{ name: 'main' }" class="nav-link">홈</RouterLink>
-          <RouterLink :to="{ name: 'search' }" class="nav-link">검색</RouterLink>
-          <RouterLink to="/" class="nav-link">위시리스트</RouterLink>
-        </div>
+  <nav class="nav-ver">
+    <div class="container-nav">
+      <RouterLink :to="{ name: 'main' }" class="nav-link">홈</RouterLink>
+      <RouterLink :to="{ name: 'search' }" class="nav-link">검색</RouterLink>
+      <RouterLink to="/" class="nav-link">위시리스트</RouterLink>
+    </div>
 
-        <button class="write-button">작성하기</button>
-        <div class="container-nav user-nav">
-          <RouterLink v-if="!isAuthenticated" :to="{ name: 'signup' }" class="nav-link">회원가입</RouterLink>
-          <RouterLink v-if="!isAuthenticated" :to="{ name: 'login' }" class="nav-link">로그인</RouterLink>
-          <RouterLink v-if="isAuthenticated" :to="{ name: 'user' }" class="nav-link">프로필</RouterLink>
-          <button v-if="isAuthenticated" @click="logout">로그아웃</button>
-        </div>
-        <div>
-        </div>
-      </nav>
-
+    <button class="write-button" @click="openModal">작성하기</button>
+    <div class="container-nav user-nav">
+      <RouterLink :to="{ name: 'user' }" class="nav-link">프로필</RouterLink>
+    </div>
+    <div>
+      <!-- 별점 관련 코드 -->
+      <!-- <WritePage v-if="showModal" @close="closeModal" :movie="movie"/> -->
+      <!-- 별점 관련 코드 -->
+    </div>
+  </nav>
 </template>
-
+  
 <script setup>
-import { computed } from 'vue'
-import { RouterView, RouterLink, useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+// import { RouterView, RouterLink } from 'vue-router'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import WritePage from '@/components/WritePage.vue'
+import { useArticleStore } from '@/stores/article.js';
+const articleStore = useArticleStore();
 
-const router = useRouter()
-const authStore = useAuthStore()
 
-const isAuthenticated = computed(() => authStore.isAuthenticated)
+// 모달 열고 닫는 showModal 
+const showModal = ref(false)
 
-const logout = () => {
-  authStore.logOut()
-  router.push('/')
-  }
+// 클릭시 모달 열리는 함수
+const openModal = () => {
+  articleStore.showModal = true
+}
+
+// 클릭시 모달 닫히는 함수
 
 </script>
 
@@ -71,3 +74,4 @@ const logout = () => {
   margin-top: auto;
 }
 </style>
+  
