@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
 from .models import Movie, Actor, Director, Genre
-from .serializers import MovieSerializer, GenreSerializer
+from .serializers import *
 import pprint
 
 def movie_list(request):
@@ -65,7 +65,7 @@ def popluar_movies(request) :
     # 인기 영화 불러오기
     popular_url = "https://api.themoviedb.org/3/movie/popular"
     
-    for i in range(1, 2) : # 페이지 수 조정
+    for i in range(1, 51) : # 페이지 수 조정
         params = {
             "api_key": API_KEY,
             "language": 'ko-KR',
@@ -90,7 +90,7 @@ def popluar_movies(request) :
                 'release_year': tmdb_movie['release_date'].split('-')[0],
                 'running_time': tmdb_movie.get('runtime', 0),
                 'poster_image': f"https://image.tmdb.org/t/p/w500{tmdb_movie['poster_path']}",
-                'director': '',
+                'director': None,
                 'actors': [],
             }
             
@@ -105,27 +105,36 @@ def popluar_movies(request) :
                 "language": 'ko-KR',
             }
             detail_response = requests.get(detail_url, headers=headers, params=detail_params).json()
+            # print(detail_response)
             movie_data['running_time'] = detail_response.get('runtime', 0)
             # pprint.pprint(detail_response)
 
             # pprint.pprint(tmdb_movie)
             # ['id', 'title', 'description', 'genre', 'release_year', 'running_time', 'director', 'actors', 'poster_image', 'likes_count', 'talks_count']
+    
             serializer = MovieSerializer(data=movie_data)
+            # print(movie_data)
             # print(serializer.data)
-            if serializer.is_valid():
+            if serializer.is_valid():      
                 movie = serializer.save()
+                
+                # 장르를 영화에 추가
+                genre_ids = tmdb_movie.get('genre_ids', [])
+                genres = Genre.objects.filter(id__in=genre_ids)
                 movie.genres.set(genres)
-                # genres = tmdb_movie.get('genres', [])
-                # for genre_data in genres:
-                #     genre = Genre.objects.get_or_create(name=genre_data['name'])
-                #     movie.genres.add(genre)
-
+                movie.save()
+                
+                
+                # print(movie)
             # if serializer.is_valid():
             #     serializer.save() 
             else:
+                print('error')
                 print(serializer.errors)
                 continue
-
+            
+            
+            
             ## 배우, 감독 정보 가져오기
             credits_url = f"https://api.themoviedb.org/3/movie/{tmdb_movie['id']}/credits"
             credits_params = {
@@ -133,34 +142,40 @@ def popluar_movies(request) :
                 "language": 'ko-KR',
             }
             credits_response = requests.get(credits_url, headers=headers, params=credits_params).json()
-            cast = credits_response.get('cast', [])
+            cast = credits_response.get('cast', [])[:5]
             crew = credits_response.get('crew', [])
+            tmdb_id = credits_response.get('id')
+            # print(tmdb_id)
             
             # 배우 정보 추출
             for actor_data in cast:
                 actor_info = {
-                    'tmdb_id': actor_data['id'],
+                    'tmdb_id': tmdb_id,
                     'name': actor_data['name'],
                     'profile_image': f"https://image.tmdb.org/t/p/w500{actor_data['profile_path']}"
                 }
-                # actor, created = Actor.objects.get_or_create(
-                #     defaults=actor_info['name']
-                # )
-                movie_data['actors'].add(actor_info['name'])
+                # print(f'actor_info: {actor_info}')
+                serializer = ActorSerializer(data=actor_info)
+                if serializer.is_valid() :
+                    actor = serializer.save()
+                    movie.actors.add(actor)
+                    movie.save()
 
             
             # 감독 정보 추출
             for crew_data in crew:
                 if crew_data['department'] == 'Directing' and crew_data['job'] == 'Director':
                     director_info = {
-                        'tmdb_id': crew_data['id'],
+                        'tmdb_id': tmdb_id,
                         'name': crew_data['name'],
                         'profile_image': f"https://image.tmdb.org/t/p/w500{crew_data['profile_path']}"
                     }
-                    # director, created = Director.objects.get_or_create(
-                    #     defaults=director_info['name']
-                    # )
-                    movie_data['director'] = director_info['name']
+                    serializer = DirectorSerializer(data=director_info)
+                    if serializer.is_valid() :
+                        director = serializer.save()
+                        movie.director = director
+                        movie.save()
+                    
                     
     return JsonResponse(serializer.data)
 
