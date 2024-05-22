@@ -190,17 +190,19 @@ def search(request):
     if request.method == 'GET':
         search_term = request.GET.get('searchTerm', '')
         search_results = Movie.objects.filter(
-            Q(title__icontains=search_term) |
-            Q(actors__name__icontains=search_term) |
-            Q(director__name__icontains=search_term) |
-            Q(genres__name__icontains=search_term)
-        ).distinct().annotate(
-            exact_match=Case(
-                    When(title__iexact=search_term, then=Value(1)),
-                    default=Value(0),
-                    output_field=IntegerField()
-                )
-        ).order_by('-exact_match')[:50] # 중복된 결과를 제거합니다.       
+    Q(title__icontains=search_term) |
+    Q(actors__name__icontains=search_term) |
+    Q(director__name__icontains=search_term) |
+    Q(genres__name__icontains=search_term),
+    tmdb_id__in=Movie.objects.values('tmdb_id').distinct()
+).distinct().annotate(
+    exact_match=Case(
+        When(title__iexact=search_term, then=Value(1)),
+        default=Value(0),
+        output_field=IntegerField()
+    )
+).order_by('-exact_match')[:50]
+       
         
         serializer = MovieSerializer(search_results, many=True)
         return JsonResponse(serializer.data, safe=False)

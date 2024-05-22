@@ -28,5 +28,5 @@ export const useMovieStore = defineStore("movie", () => {
       });
   };
 
-  return { search };
+  return { movies, search };
 });

@@ -1,20 +1,30 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import PiniaPluginPersistedState from 'pinia-plugin-persistedstate'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import PiniaPluginPersistedState from "pinia-plugin-persistedstate";
 
-import App from './App.vue'
-import router from './router'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-const app = createApp(App)
-const pinia = createPinia()
+import App from "./App.vue";
+import router from "./router";
 
-pinia.use(PiniaPluginPersistedState)
-app.use(pinia)
-app.use(router)
+const app = createApp(App);
+const pinia = createPinia();
 
-app.mount('#app')
+// 사용할 아이콘을 라이브러리에 추가
+library.add(faSearch);
 
-import axios from 'axios'
+// 전역으로 등록
+app.component("font-awesome-icon", FontAwesomeIcon);
+
+pinia.use(PiniaPluginPersistedState);
+app.use(pinia);
+app.use(router);
+
+app.mount("#app");
+
+import axios from "axios";
 
 // Vue.config.productionTip = false
 

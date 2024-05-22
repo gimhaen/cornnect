@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MainView from "@/views/MainView.vue";
 import SearchView from "@/views/SearchView.vue";
+import MovieDetailView from "@/views/MovieDetailView.vue";
 import UserView from "@/views/UserView.vue";
 import SignUpView from "@/views/SignUpView.vue";
 import LogInView from "@/views/LogInView.vue";
@@ -56,6 +57,17 @@ const router = createRouter({
           return { name: "main" };
         }
       },
+    },
+    {
+      path: "/movie/:id",
+      name: "MovieDetail",
+      component: MovieDetailView,
+      children: [
+        { path: "", redirect: "review" },
+        { path: "review", component: Review },
+        { path: "movie-talk", component: MovieTalk },
+        { path: "basic-info", component: BasicInfo },
+      ],
     },
   ],
 });
