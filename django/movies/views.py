@@ -1,13 +1,18 @@
 # movies/views.py
 import requests
+import pprint
+
 from django.conf import settings
 from django.http import JsonResponse
+from django.db.models import Q, Case, When, Value, IntegerField
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.csrf import csrf_protect
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.shortcuts import render, get_object_or_404
-from .models import Movie, Actor, Director, Genre
+
+from .models import *
 from .serializers import *
-import pprint
 
 def movie_list(request):
     movies = Movie.objects.all()
@@ -42,7 +47,7 @@ def box_office(request):
 
 
 ## 영화데이터 불러오기 함수
-def popluar_movies(request) : 
+def popular_movies(request) : 
     API_KEY = "68992e4014416feadeedd858d35551c8"
     headers = {
         "accept": "application/json",
@@ -179,3 +184,25 @@ def popluar_movies(request) :
                     
     return JsonResponse(serializer.data)
 
+
+# 영화 검색 
+def search(request):
+    if request.method == 'GET':
+        search_term = request.GET.get('searchTerm', '')
+        search_results = Movie.objects.filter(
+            Q(title__icontains=search_term) |
+            Q(actors__name__icontains=search_term) |
+            Q(director__name__icontains=search_term) |
+            Q(genres__name__icontains=search_term)
+        ).distinct().annotate(
+            exact_match=Case(
+                    When(title__iexact=search_term, then=Value(1)),
+                    default=Value(0),
+                    output_field=IntegerField()
+                )
+        ).order_by('-exact_match')[:50] # 중복된 결과를 제거합니다.       
+        
+        serializer = MovieSerializer(search_results, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        return JsonResponse({'error': 'POST 요청이 필요합니다.'}, status=400)

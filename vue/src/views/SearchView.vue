@@ -1,83 +1,93 @@
-<!-- <template>
-    <div class="search-container">
-        <h3>검색</h3>
-      <div class="talk-list-nav">
-          <TalkList />   
-      </div>
-  </div>
-</template> -->
 <template>
   <div class="search-container">
     <div class="search-page">
       <div class="search-card">
-        <input type="text" v-model="searchQuery" @input="searchMovies" placeholder="Search">
-        <div v-if="isLoading">로딩 중...</div>
-        <div v-else-if="errorMessage">에러: {{ errorMessage }}</div>
-        <div v-else>
+        <input
+          :value="searchTerm"
+          @input="onSearchInput"
+          placeholder="영화제목, 배우, 감독 또는 장르를 입력하세요."
+          type="text"
+        />
+        <Button @click="searchMovies">검색</Button>
+        <div>
           <div v-for="movie in movies" :key="movie.id">
             <h2>{{ movie.title }}</h2>
             <p>개봉 연도: {{ movie.releaseYear }}</p>
             <p>평점: {{ movie.rating }}</p>
           </div>
         </div>
+        <ul>
+          <li v-for="movie in movies" :key="movie.id">{{ movie.title }}</li>
+        </ul>
       </div>
       <BoxOffice class="box-office" />
     </div>
 
     <div class="talk-list-nav">
-      <TalkList />   
+      <TalkList />
     </div>
   </div>
 </template>
-  
+
 <script setup>
-  import { ref } from 'vue';
-  import TalkList from '@/components/TalkList.vue'
-  import BoxOffice from '@/components/BoxOffice.vue'
+import { ref, watch } from "vue";
+import TalkList from "@/components/TalkList.vue";
+import BoxOffice from "@/components/BoxOffice.vue";
+import axios from "axios";
+import { useMovieStore } from "@/stores/movie.js";
+/////////////////////////////////////////////////////////////////////////////////온겸이꺼
+// const searchQuery = ref("");
+// const movies = ref([]);
+// const isLoading = ref(false);
+// const errorMessage = ref("");
 
-  const searchQuery = ref('');
-  const movies = ref([]);
-  const isLoading = ref(false);
-  const errorMessage = ref('');
+// const searchMovies = async () => {
+//   if (!searchQuery.value) {
+//     return;
+//   }
+//   isLoading.value = true;
+//   try {
+//     // 여기서 실제 API 엔드포인트를 사용하세요
+//     const response = await fetch(
+//       `https://api.example.com/movies?search=${searchQuery.value}`
+//     );
+//     const data = await response.json();
+//     movies.value = data;
+//     errorMessage.value = "";
+//   } catch (error) {
+//     errorMessage.value = "영화를 불러오는 중에 오류가 발생했습니다.";
+//   } finally {
+//     isLoading.value = false;
+//   }
+// };
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const searchMovies = async () => {
-    if (!searchQuery.value) {
-      return;
-    }
-    isLoading.value = true;
-    try {
-      // 여기서 실제 API 엔드포인트를 사용하세요
-      const response = await fetch(`https://api.example.com/movies?search=${searchQuery.value}`);
-      const data = await response.json();
-      movies.value = data;
-      errorMessage.value = '';
-    } catch (error) {
-      errorMessage.value = '영화를 불러오는 중에 오류가 발생했습니다.';
-    } finally {
-      isLoading.value = false;
-    }
-  };
+const movieStore = useMovieStore();
+const searchTerm = ref("");
+const searchResults = ref([]);
+const onSearchInput = (event) => {
+  searchTerm.value = event.target.value;
+};
+const searchMovies = function () {
+  console.log(searchTerm.value);
+  movieStore.search(searchTerm.value);
+};
+watch(
+  () => movieStore.movies,
+  (newMovies) => {
+    searchResults.value = newMovies;
+  }
+);
+
+const movies = useMovieStore().movies;
 </script>
-
-<!-- <style scoped>
-.search-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-</style> -->
-
-  
-<!-- <script setup>
-  import TalkList from '@/components/TalkList.vue'
-</script> -->
 
 <style scoped>
 .search-container {
   display: flex;
   justify-content: center; /* 검색을 가운데 정렬 */
   align-items: flex-start; /* 세로 중앙 정렬 */
-  height: 100vh; 
+  height: 100vh;
 }
 
 .search-page {
