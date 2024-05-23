@@ -22,7 +22,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class MovieSerializer(serializers.ModelSerializer):
     actors = ActorSerializer(many=True, read_only=True)
-    directors = DirectorSerializer(many=True, read_only=True)
+    director = DirectorSerializer(read_only=True)
     genres = GenreSerializer(many=True, read_only=True)
     
     class Meta:

@@ -4,14 +4,14 @@
     <div class="article-container">
       <MainList class="article-list" />
     </div>
-    <InfoNav class="info-nav" />   
+    <MAinInfoNav class="info-nav" />
   </div>
 </template>
 
 <script setup>
-// import WriteModal from '@/components/WritePage.vue'
-import MainList from '@/components/MainList.vue'
-import InfoNav from '@/components/MainInfoNav.vue'
+// import WriteModal from "@/components/WritePage.vue";
+import MainList from "@/components/MainList.vue";
+import MAinInfoNav from "@/components/MainInfoNav.vue";
 </script>
 
 <style scoped>
@@ -39,8 +39,6 @@ import InfoNav from '@/components/MainInfoNav.vue'
   width: 180px;
   padding: 20px;
   border: 1px solid #ccc;
-  margin-left: auto /* 우측 끝에 위치시킴 */
+  margin-left: auto; /* 우측 끝에 위치시킴 */
 }
-
 </style>
-

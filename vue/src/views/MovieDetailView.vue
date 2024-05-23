@@ -6,22 +6,22 @@
       <p>{{ movie.description }}</p>
     </header>
     <nav>
-      <RouterLink :to="{ path: `/movie/${$route.params.tmdb_id}/review` }"
+      <RouterLink :to="{ path: `/movie/${$route.params.tmdb_id}/review/` }"
         >리뷰</RouterLink
       >
-      <RouterLink :to="{ path: `/movie/${$route.params.tmdb_id}/movie-talk` }"
+      <RouterLink :to="{ path: `/movie/${$route.params.tmdb_id}/talk/` }"
         >무비톡</RouterLink
       >
-      <RouterLink :to="{ path: `/movie/${$route.params.tmdb_id}/basic-info` }"
+      <RouterLink :to="{ path: `/movie/${$route.params.tmdb_id}/info/` }"
         >기본정보</RouterLink
       >
     </nav>
-    <router-view></router-view>
+    <RouterView />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import { useMovieStore } from "@/stores/movie.js";
@@ -29,7 +29,7 @@ import { useMovieStore } from "@/stores/movie.js";
 const movieStore = useMovieStore();
 const route = useRoute();
 const movie = ref({});
-
+const tmdb_id = computed(() => route.params.tmdb_id);
 onMounted(() => {
   movieStore
     .movie_detail(route.params.tmdb_id)

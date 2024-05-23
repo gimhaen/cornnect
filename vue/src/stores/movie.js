@@ -30,7 +30,7 @@ export const useMovieStore = defineStore("movie", () => {
   };
 
   const movie_detail = function (tmdb_id) {
-    axios({
+    return axios({
       method: "get",
       url: `http://127.0.0.1:8000/movies/${tmdb_id}/`,
       headers: {
@@ -39,7 +39,7 @@ export const useMovieStore = defineStore("movie", () => {
     })
       .then((response) => {
         movie.value = response.data;
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch((error) => {
         console.error("Error searching movies:", error);

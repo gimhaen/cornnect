@@ -10,7 +10,6 @@
       </main>
     </div>
   </header>
-
 </template>
 
 <script setup>

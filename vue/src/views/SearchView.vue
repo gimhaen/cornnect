@@ -75,6 +75,14 @@ const movies = computed(() => movieStore.movies);
 const goToMovieDetail = (event, tmdb_id) => {
   router.push({ path: `/movie/${tmdb_id}` });
 };
+
+// 검색 페이지(SearchView.vue)에서 다른 페이지로 이동할 때마다 movies 초기화
+router.beforeEach((to, from, next) => {
+  if (from.name === "search" && to.name !== "search") {
+    movieStore.movies = [];
+  }
+  next();
+});
 </script>
 
 <style scoped>

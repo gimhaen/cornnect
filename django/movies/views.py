@@ -1,30 +1,21 @@
 # movies/views.py
 import requests
-from django.conf import settings
-from django.http import JsonResponse
-from django.db.models import Q, Case, When, Value, IntegerField
-from rest_framework.decorators import api_view, parser_classes
-from rest_framework.response import Response
-from django.shortcuts import render, get_object_or_404
-from .models import *
-from .serializers import *
 import pprint
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
-def movie_list(request):
-    movies = Movie.objects.all()
-    serializer = MovieSerializer(movies, many=True)
-    print(movies)
-    return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False}, safe=False)
+from django.conf import settings
+from django.http import JsonResponse
+from django.db.models import Q, Case, When, Value, IntegerField
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.csrf import csrf_protect
 
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.response import Response
 
-def movie_detail(request, movie_id):
-    movie = Movie.objects.get(pk=movie_id)
-    serializer = MovieSerializer(movie)
-    return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False}, safe=False)
-
+from .models import *
+from .serializers import *
 
 # 박스오피스
 @api_view(['GET'])
@@ -37,10 +28,36 @@ def box_office(request):
     # response = requests.get(url)
     # request.GET.get('targetDt', '20230501')
     response = requests.get(url, params=params)
-    print(response)
+    # print(response)
     data = response.json()
     return JsonResponse(data)
 
+# 영화 검색 
+def search(request):
+    if request.method == 'GET':
+        search_term = request.GET.get('searchTerm', '')
+        search_results = Movie.objects.filter(
+    Q(title__icontains=search_term) |
+    Q(actors__name__icontains=search_term) |
+    Q(director__name__icontains=search_term) |
+    Q(genres__name__icontains=search_term),
+    # tmdb_id__in=Movie.objects.values('tmdb_id')
+).distinct()[:50]
+       
+        
+        serializer = MovieSerializer(search_results, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        return JsonResponse({'error': 'POST 요청이 필요합니다.'}, status=400)
+
+# 영화 상세
+
+def movie_detail(request, tmdb_id):
+    print('-')
+    movie = get_object_or_404(Movie, tmdb_id=tmdb_id)
+    print(movie)
+    serializer = MovieSerializer(movie)
+    return JsonResponse(serializer.data, safe=False)
 
 @api_view(['GET', 'POST'])
 @parser_classes([MultiPartParser, FormParser])

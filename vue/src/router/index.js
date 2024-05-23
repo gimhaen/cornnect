@@ -73,13 +73,13 @@ const router = createRouter({
       name: "MovieDetail",
       component: MovieDetailView,
       children: [
-        { path: "movie-review", component: MovieReview },
-        { path: "movie-talk", component: MovieTalk },
-        { path: "basic-info", component: MovieBasicInfo },
+        { path: "review", component: MovieReview },
+        { path: "talk", component: MovieTalk },
+        { path: "info", component: MovieBasicInfo },
       ],
     },
-  ]
-})
+  ],
+});
 
 // router.beforeEach((to, from) => {
 //   const store = useAuthStore()
