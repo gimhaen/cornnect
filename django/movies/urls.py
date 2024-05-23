@@ -3,8 +3,10 @@ from . import views
 
 app_name = 'movies'
 urlpatterns = [
-    path('', views.movie_list, name='movie_list'),
-    path('<int:movie_id>/', views.movie_detail, name='movie_detail'),
     path('box-office/', views.box_office, name='box_office'),
-    path('popluar_movies/', views.popluar_movies, name="popluar_movies")
+    path('<int:movie_id>/review/', views.review_create, name="review_create"),
+    path('reviews/', views.reviews, name="reviews"),
+    path('search/', views.search, name='search'),
+    path('<int:tmdb_id>/', views.movie_detail, name="movie_detail"),
+    path('popular_movies/', views.popular_movies, name="popular_movies"),
 ]

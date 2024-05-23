@@ -3,7 +3,7 @@ from django.conf import settings
 
 # 영화
 class Movie(models.Model):
-    tmdb_id = models.BigIntegerField()
+    tmdb_id = models.BigIntegerField(unique=True)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     genres = models.ManyToManyField('Genre', related_name='movies',null=True, blank=True)
@@ -12,8 +12,8 @@ class Movie(models.Model):
     director = models.ForeignKey('Director', on_delete=models.CASCADE, related_name='movies', null=True, blank=True)
     actors = models.ManyToManyField('Actor', related_name='movies', null=True, blank=True)
     poster_image = models.CharField(max_length=300)
-    likes_count = models.IntegerField(default=0)
-    talks_count = models.IntegerField(default=0)
+    # likes_count = models.IntegerField(default=0)
+    # talks_count = models.IntegerField(default=0)
     def __str__(self):
         return self.title
     
@@ -83,9 +83,9 @@ class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
     rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     content = models.CharField(max_length=10000)
-    review_image = models.ImageField(upload_to='movie_reviews/')
-    likes_count = models.IntegerField(default=0)
-    comments_count = models.IntegerField(default=0)
+    review_image = models.ImageField(upload_to='movie_reviews/', blank=True, null=True)
+    # likes_count = models.IntegerField(default=0)
+    # comments_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

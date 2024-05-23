@@ -2,7 +2,7 @@
   <div id="app">
     <h1>박스오피스 순위</h1>
     <div v-if="movies" class="boxoffice-container">
-        <div v-for="movie in movies" :key="movie.movieCd" class="boxoffice-card">
+        <div v-for="movie in movies.slice(0, 5)" :key="movie.movieCd" class="boxoffice-card">
           <div v-if="movie.rank == 1" style="color: red;">
             <p class="boxoffice-sales-share">예매율 {{ movie.salesShare }}%</p>
           </div>

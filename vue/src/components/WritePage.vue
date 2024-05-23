@@ -1,22 +1,31 @@
 <template>
   <div v-if="articleStore.showModal" class="modal-overlay" @click.self="closeModal">
     <div class="modal-container">
-      <div class="modal-header">
-        <button class="close-button" @click="closeModal">×</button>
-      </div>
+      <!-- <div class="modal-header">
+      </div> -->
+      <button class="close-button" @click="closeModal">×</button>
       <div class="modal-content">
-        <input
-          type="text"
-          v-model="title"
-          placeholder="제목을 입력하세요"
-          class="input-title"
-        />
         <textarea
           v-model="content"
-          placeholder="내용을 입력하세요"
+          placeholder="리뷰를 작성하세요..."
           class="input-content"
         ></textarea>
-        <button @click="submitPost" class="submit-button">게시</button>
+        <input type="file" @change="handleImageChange"> <!-- 이미지 파일을 선택하는 input 추가 -->
+        <div v-if="previewImage" class="image-preview"> <!-- 미리보기를 표시할 요소 -->
+          <img :src="previewImage" alt="Preview">
+        </div>
+        <div class="rating-container">
+          <span class="rating-label">별점:</span>
+          <div class="rating-stars">
+            <span
+              v-for="(star, index) in 5"
+              :key="index"
+              @click="setRating(index + 1)"
+              :class="{ 'filled': index < Math.floor(rating) || (index === Math.floor(rating) && rating % 1 !== 0) }"
+            >★</span>
+          </div>
+          <button @click="submitPost" class="submit-button">Post</button>
+        </div>
       </div>
     </div>
   </div>
@@ -25,20 +34,49 @@
 <script setup>
 import { ref } from 'vue';
 import { useArticleStore } from '@/stores/article.js';
+import { useAuthStore } from '@/stores/auth.js';
 
 const articleStore = useArticleStore();
-const title = ref('')
-const content = ref('')
+const authStore = useAuthStore();
 
+const content = ref('');
+const rating = ref(5);
+const previewImage = ref(null); // 이미지 미리보기를 위한 상태 추가
+const imageFile = ref(null)
 const closeModal = () => {
-  articleStore.showModal = false
+  rating.value = 5
+  content.value = ""
+  previewImage.value = null
+  imageFile.value = null
+  articleStore.closeModal();
+};
+
+const handleImageChange = (event) => {
+  const file = event.target.files[0];
+  imageFile.value = file
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      previewImage.value = reader.result; // 선택된 이미지를 미리보기에 표시
+    };
+    reader.readAsDataURL(file);
+  }
 };
 
 const submitPost = () => {
-  // Post submission logic here
-  console.log('Title:', title.value);
-  console.log('Content:', content.value);
-  closeModal();
+ 
+  console.log(rating.value, content.value, imageFile.value)
+  const movie_id = 1
+  articleStore.writeReview(movie_id, rating.value, content.value, imageFile.value)
+ 
+  closeModal()
+
+
+
+};
+
+const setRating = (value) => {
+  rating.value = value;
 };
 </script>
 
@@ -103,9 +141,37 @@ const submitPost = () => {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-left: auto;
 }
 
 .submit-button:hover {
   background-color: #0056b3;
 }
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.rating-label {
+  margin-right: 10px;
+}
+
+.rating-stars {
+  color: #fff88f; /* Yellow color for stars */
+}
+
+.rating-stars span {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.rating-stars span.filled {
+  color: #ffbb00; /* Filled star color */
+}
+
+/* .image-preview {
+  justify-content: center;
+} */
 </style>

@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +28,4 @@ urlpatterns = [
     path('api/user/', include('accounts.urls')), # accounts 앱의 URL은 /api/user/ 경로로 연결
     path('movies/', include('movies.urls')),
     path('api/token/', obtain_auth_token, name='api_token_auth'),  # 토큰 얻기 엔드포인트
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

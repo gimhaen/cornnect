@@ -12,7 +12,7 @@ def update_user(request):
     serializer = UpdateUserSerializer(user, data=request.data, partial=True)
 
     if serializer.is_valid():
-        serializer.save()
+        serializer.save(profile_pic=request.FILES.get('profile_pic'))
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

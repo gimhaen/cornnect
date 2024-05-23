@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <WriteModal />
+    <!-- <WriteModal /> -->
     <div class="article-container">
       <MainList class="article-list" />
     </div>
@@ -9,9 +9,9 @@
 </template>
 
 <script setup>
-import WriteModal from '@/components/WritePage.vue'
+// import WriteModal from '@/components/WritePage.vue'
 import MainList from '@/components/MainList.vue'
-import InfoNav from '@/components/layout/InfoNav.vue'
+import InfoNav from '@/components/MainInfoNav.vue'
 </script>
 
 <style scoped>
@@ -19,7 +19,7 @@ import InfoNav from '@/components/layout/InfoNav.vue'
   display: flex;
   justify-content: space-between; /* 두 요소 간에 여백 */
   align-items: flex-start; /* 선택 사항: 상단 정렬 */
-  height: 100vh; /* 화면의 100% 차지 */
+  height: 100%; /* 화면의 100% 차지 */
 }
 
 .article-container {

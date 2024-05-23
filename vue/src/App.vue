@@ -1,8 +1,11 @@
 <template>
   <header>
     <div class="container">
-      <SideNav />
+      <WriteModal />
+      <ProfileModal />
+      <MainSideNav />
       <main>
+        
         <RouterView />
       </main>
     </div>
@@ -12,8 +15,11 @@
 
 <script setup>
 import { RouterView, RouterLink } from 'vue-router'
-import SideNav from '@/components/layout/SideNav.vue'
-import MainView from '@/views/MainView.vue'
+import WriteModal from '@/components/WritePage.vue'
+import ProfileModal from "@/components/ProfilePage.vue";
+import MainSideNav from '@/components/MainSideNav.vue'
+// import MainView from '@/views/MainView.vue'
+
 </script>
 
 <style scoped>

@@ -2,32 +2,33 @@
 import requests
 from django.conf import settings
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from django.db.models import Q, Case, When, Value, IntegerField
+from rest_framework.decorators import api_view, parser_classes
 from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
-from .models import Movie, Actor, Director, Genre
+from .models import *
 from .serializers import *
 import pprint
+from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 def movie_list(request):
     movies = Movie.objects.all()
-    context = {
-        'movies': movies,
-    }
-    return render(request, 'movies/movie_list.html', context)
+    serializer = MovieSerializer(movies, many=True)
+    print(movies)
+    return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False}, safe=False)
+
 
 def movie_detail(request, movie_id):
-    movie = get_object_or_404(Movie, pk=movie_id)
-    context = {
-        'movie': movie,
-    }
-    return render(request, 'movies/movie_detail.html', context)
+    movie = Movie.objects.get(pk=movie_id)
+    serializer = MovieSerializer(movie)
+    return JsonResponse(serializer.data, json_dumps_params={'ensure_ascii': False}, safe=False)
 
 
 # 박스오피스
 @api_view(['GET'])
 def box_office(request):
-    print('dfdfdf')
     url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json"
     params = {
         'key': '2083a37ad3c34c2ad3a8f96bbbaeba31',
@@ -41,8 +42,62 @@ def box_office(request):
     return JsonResponse(data)
 
 
+@api_view(['GET', 'POST'])
+@parser_classes([MultiPartParser, FormParser])
+def review_create(request, movie_id):
+    # print('dd')
+    movie = Movie.objects.get(pk=movie_id)
+    print(movie)
+    if request.method == 'GET' :
+        print(movie.review_set.all())
+        
+    elif request.method == 'POST' :
+        # print('22')
+        # print(request.FILES.get('review_image'))
+        serialzer = ReviewSerialzer(data=request.data)
+        if serialzer.is_valid(raise_exception=True):
+            serialzer.save(movie=movie, user=request.user, review_image=request.FILES.get('review_image'))
+            return Response(serialzer.data)
+
+    return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+def reviews(request):
+    reviews = Review.objects.all()
+    serialzer = ReviewSerialzer(reviews, many=True)
+    
+    return Response(serialzer.data)
+
+# 영화 검색 
+def search(request):
+    if request.method == 'GET':
+        search_term = request.GET.get('searchTerm', '')
+        search_results = Movie.objects.filter(
+    Q(title__icontains=search_term) |
+    Q(actors__name__icontains=search_term) |
+    Q(director__name__icontains=search_term) |
+    Q(genres__name__icontains=search_term),
+    # tmdb_id__in=Movie.objects.values('tmdb_id')
+).distinct()[:50]
+       
+        
+        serializer = MovieSerializer(search_results, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        return JsonResponse({'error': 'POST 요청이 필요합니다.'}, status=400)
+
+# 영화 상세
+
+def movie_detail(request, tmdb_id):
+    print('-')
+    movie = get_object_or_404(Movie, tmdb_id=tmdb_id)
+    print(movie)
+    serializer = MovieSerializer(movie)
+    return JsonResponse(serializer.data, safe=False)
+
 ## 영화데이터 불러오기 함수
-def popluar_movies(request) : 
+def popular_movies(request) : 
     API_KEY = "68992e4014416feadeedd858d35551c8"
     headers = {
         "accept": "application/json",
@@ -178,4 +233,3 @@ def popluar_movies(request) :
                     
                     
     return JsonResponse(serializer.data)
-

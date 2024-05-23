@@ -1,83 +1,88 @@
-<!-- <template>
-    <div class="search-container">
-        <h3>검색</h3>
-      <div class="talk-list-nav">
-          <TalkList />   
-      </div>
-  </div>
-</template> -->
+<!-- SearchView.vue -->
 <template>
   <div class="search-container">
     <div class="search-page">
       <div class="search-card">
-        <input type="text" v-model="searchQuery" @input="searchMovies" placeholder="Search">
-        <div v-if="isLoading">로딩 중...</div>
-        <div v-else-if="errorMessage">에러: {{ errorMessage }}</div>
-        <div v-else>
-          <div v-for="movie in movies" :key="movie.id">
+        <div class="search-input-container">
+          <input
+            v-model="searchTerm"
+            @input="onSearchInput"
+            @keyup.enter="searchMovies"
+            placeholder="영화제목, 배우, 감독 또는 장르를 입력하세요."
+            type="text"
+          />
+          <button class="search-button" @click="searchMovies">
+            <font-awesome-icon icon="search" />
+          </button>
+        </div>
+
+        <div class="movies-grid" v-if="movies.length > 0">
+          <div
+            v-for="movie in movies"
+            :key="movie.id"
+            class="movie-card"
+            @click="goToMovieDetail($event, movie.tmdb_id)"
+          >
+            <img
+              :src="movie.poster_image"
+              :alt="movie.title"
+              class="movie-poster"
+            />
             <h2>{{ movie.title }}</h2>
-            <p>개봉 연도: {{ movie.releaseYear }}</p>
-            <p>평점: {{ movie.rating }}</p>
+            <p>{{ movie.tmdb_id }}</p>
           </div>
         </div>
+        <div v-else v-show="showResults">
+          <p>검색 결과가 없습니다.</p>
+        </div>
       </div>
-      <BoxOffice class="box-office" />
+      <SearchBoxOffice v-show="!showResults" class="box-office" />
     </div>
 
     <div class="talk-list-nav">
-      <TalkList />   
+      <TalkList />
     </div>
   </div>
 </template>
-  
+
 <script setup>
-  import { ref } from 'vue';
-  import TalkList from '@/components/TalkList.vue'
-  import BoxOffice from '@/components/BoxOffice.vue'
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import TalkList from "@/components/TalkList.vue";
+import SearchBoxOffice from "@/components/SearchBoxOffice.vue";
+import { useMovieStore } from "@/stores/movie.js";
 
-  const searchQuery = ref('');
-  const movies = ref([]);
-  const isLoading = ref(false);
-  const errorMessage = ref('');
+// 검색 결과 받아오기
+const movieStore = useMovieStore();
+const searchTerm = ref("");
+const showResults = ref(false);
+const router = useRouter();
 
-  const searchMovies = async () => {
-    if (!searchQuery.value) {
-      return;
-    }
-    isLoading.value = true;
-    try {
-      // 여기서 실제 API 엔드포인트를 사용하세요
-      const response = await fetch(`https://api.example.com/movies?search=${searchQuery.value}`);
-      const data = await response.json();
-      movies.value = data;
-      errorMessage.value = '';
-    } catch (error) {
-      errorMessage.value = '영화를 불러오는 중에 오류가 발생했습니다.';
-    } finally {
-      isLoading.value = false;
-    }
-  };
+const onSearchInput = (event) => {
+  searchTerm.value = event.target.value;
+};
+
+const searchMovies = () => {
+  if (searchTerm.value.trim() !== "") {
+    movieStore.search(searchTerm.value);
+    showResults.value = true;
+  }
+};
+
+const movies = computed(() => movieStore.movies);
+
+// 영화 상세 페이지로 가기
+const goToMovieDetail = (event, tmdb_id) => {
+  router.push({ path: `/movie/${tmdb_id}` });
+};
 </script>
-
-<!-- <style scoped>
-.search-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-</style> -->
-
-  
-<!-- <script setup>
-  import TalkList from '@/components/TalkList.vue'
-</script> -->
 
 <style scoped>
 .search-container {
   display: flex;
   justify-content: center; /* 검색을 가운데 정렬 */
   align-items: flex-start; /* 세로 중앙 정렬 */
-  height: 100vh; 
+  height: 100vh;
 }
 
 .search-page {
@@ -93,14 +98,60 @@
   justify-content: center;
 }
 
-input[type="text"] {
+.search-input-container {
+  display: flex;
+  align-items: center;
   width: 80%;
   min-width: 400px;
-  padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 20px; /* 동그랗게 만들기 */
-  font-size: 16px; /* 텍스트 크기 */
-  outline: none; /* 포커스시 테두리 제거 */
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+
+.search-input-container input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.search-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(200px, 1fr)
+  ); /* 반응형 그리드 설정 */
+  gap: 20px;
+  width: 100%;
+  padding: 20px;
+}
+
+.movie-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+}
+
+.movie-poster {
+  width: 100%;
+  height: 300px;
+  display: block;
+}
+
+.movie-card h2 {
+  font-size: 18px;
+  margin: 10px 0;
+  padding: 0 10px;
 }
 
 .talk-list-nav {
