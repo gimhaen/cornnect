@@ -1,19 +1,18 @@
 <template>
   <header>
     <div class="container">
-      <SideNav />
+      <MainSideNav />
       <main>
         <RouterView />
       </main>
     </div>
   </header>
-
 </template>
 
 <script setup>
-import { RouterView, RouterLink } from 'vue-router'
-import SideNav from '@/components/layout/SideNav.vue'
-import MainView from '@/views/MainView.vue'
+import { RouterView, RouterLink } from "vue-router";
+import MainSideNav from "@/components/MainSideNav.vue";
+import MainView from "@/views/MainView.vue";
 </script>
 
 <style scoped>
@@ -27,4 +26,4 @@ main {
   padding: 0;
   border: 1px solid #ccc;
 }
-</style> 
+</style>

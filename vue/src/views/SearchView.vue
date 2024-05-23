@@ -16,21 +16,23 @@
           </button>
         </div>
 
-        <div
-          class="movies-grid"
-          v-if="movies.length > 0"
-          @click="goToMovieDetail"
-        >
-          <div v-for="movie in movies" :key="movie.id" class="movie-card">
+        <div class="movies-grid" v-if="movies.length > 0">
+          <div
+            v-for="movie in movies"
+            :key="movie.id"
+            class="movie-card"
+            @click="goToMovieDetail($event, movie.tmdb_id)"
+          >
             <img
               :src="movie.poster_image"
               :alt="movie.title"
               class="movie-poster"
             />
             <h2>{{ movie.title }}</h2>
+            <p>{{ movie.tmdb_id }}</p>
           </div>
         </div>
-        <div v-else>
+        <div v-else v-show="showResults">
           <p>검색 결과가 없습니다.</p>
         </div>
       </div>
@@ -45,7 +47,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import TalkList from "@/components/TalkList.vue";
 import BoxOffice from "@/components/BoxOffice.vue";
 import { useMovieStore } from "@/stores/movie.js";
@@ -54,9 +56,12 @@ import { useMovieStore } from "@/stores/movie.js";
 const movieStore = useMovieStore();
 const searchTerm = ref("");
 const showResults = ref(false);
+const router = useRouter();
+
 const onSearchInput = (event) => {
   searchTerm.value = event.target.value;
 };
+
 const searchMovies = () => {
   if (searchTerm.value.trim() !== "") {
     movieStore.search(searchTerm.value);
@@ -66,15 +71,18 @@ const searchMovies = () => {
 
 const movies = computed(() => movieStore.movies);
 
-// 영화 상세페이지로 넘어가기
-const router = useRouter();
-const route = useRoute();
-const movie = route.params.movie;
-
-const goToMovieDetail = () => {
-  // 해당 영화의 상세 페이지로 이동
-  router.push({ name: "MovieDetail", params: { id: movie.id } });
+// 영화 상세 페이지로 가기
+const goToMovieDetail = (event, tmdb_id) => {
+  router.push({ path: `/movie/${tmdb_id}` });
 };
+
+// 검색 페이지(SearchView.vue)에서 다른 페이지로 이동할 때마다 movies 초기화
+router.beforeEach((to, from, next) => {
+  if (from.name === "search" && to.name !== "search") {
+    movieStore.movies = [];
+  }
+  next();
+});
 </script>
 
 <style scoped>

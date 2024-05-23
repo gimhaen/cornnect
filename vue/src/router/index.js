@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainView from "@/views/MainView.vue";
 import SearchView from "@/views/SearchView.vue";
 import MovieDetailView from "@/views/MovieDetailView.vue";
+import MovieReview from "@/components/MovieReview.vue";
+import MovieTalk from "@/components/MovieTalk.vue";
+import MovieBasicInfo from "@/components/MovieBasicInfo.vue";
 import UserView from "@/views/UserView.vue";
 import SignUpView from "@/views/SignUpView.vue";
 import LogInView from "@/views/LogInView.vue";
@@ -59,14 +62,13 @@ const router = createRouter({
       },
     },
     {
-      path: "/movie/:id",
+      path: "/movie/:tmdb_id",
       name: "MovieDetail",
       component: MovieDetailView,
       children: [
-        { path: "", redirect: "review" },
-        { path: "review", component: Review },
-        { path: "movie-talk", component: MovieTalk },
-        { path: "basic-info", component: BasicInfo },
+        { path: "review", component: MovieReview },
+        { path: "talk", component: MovieTalk },
+        { path: "info", component: MovieBasicInfo },
       ],
     },
   ],

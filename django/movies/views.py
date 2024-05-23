@@ -14,21 +14,6 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 
-def movie_list(request):
-    movies = Movie.objects.all()
-    context = {
-        'movies': movies,
-    }
-    return render(request, 'movies/movie_list.html', context)
-
-def movie_detail(request, movie_id):
-    movie = get_object_or_404(Movie, pk=movie_id)
-    context = {
-        'movie': movie,
-    }
-    return render(request, 'movies/movie_detail.html', context)
-
-
 # 박스오피스
 @api_view(['GET'])
 def box_office(request):
@@ -41,10 +26,36 @@ def box_office(request):
     # response = requests.get(url)
     # request.GET.get('targetDt', '20230501')
     response = requests.get(url, params=params)
-    print(response)
+    # print(response)
     data = response.json()
     return JsonResponse(data)
 
+# 영화 검색 
+def search(request):
+    if request.method == 'GET':
+        search_term = request.GET.get('searchTerm', '')
+        search_results = Movie.objects.filter(
+    Q(title__icontains=search_term) |
+    Q(actors__name__icontains=search_term) |
+    Q(director__name__icontains=search_term) |
+    Q(genres__name__icontains=search_term),
+    # tmdb_id__in=Movie.objects.values('tmdb_id')
+).distinct()[:50]
+       
+        
+        serializer = MovieSerializer(search_results, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        return JsonResponse({'error': 'POST 요청이 필요합니다.'}, status=400)
+
+# 영화 상세
+
+def movie_detail(request, tmdb_id):
+    print('-')
+    movie = get_object_or_404(Movie, tmdb_id=tmdb_id)
+    print(movie)
+    serializer = MovieSerializer(movie)
+    return JsonResponse(serializer.data, safe=False)
 
 ## 영화데이터 불러오기 함수
 def popular_movies(request) : 
@@ -185,26 +196,3 @@ def popular_movies(request) :
     return JsonResponse(serializer.data)
 
 
-# 영화 검색 
-def search(request):
-    if request.method == 'GET':
-        search_term = request.GET.get('searchTerm', '')
-        search_results = Movie.objects.filter(
-    Q(title__icontains=search_term) |
-    Q(actors__name__icontains=search_term) |
-    Q(director__name__icontains=search_term) |
-    Q(genres__name__icontains=search_term),
-    tmdb_id__in=Movie.objects.values('tmdb_id').distinct()
-).distinct().annotate(
-    exact_match=Case(
-        When(title__iexact=search_term, then=Value(1)),
-        default=Value(0),
-        output_field=IntegerField()
-    )
-).order_by('-exact_match')[:50]
-       
-        
-        serializer = MovieSerializer(search_results, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    else:
-        return JsonResponse({'error': 'POST 요청이 필요합니다.'}, status=400)

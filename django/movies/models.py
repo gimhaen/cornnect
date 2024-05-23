@@ -3,7 +3,7 @@ from django.conf import settings
 
 # 영화
 class Movie(models.Model):
-    tmdb_id = models.BigIntegerField()
+    tmdb_id = models.BigIntegerField(unique=True)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     genres = models.ManyToManyField('Genre', related_name='movies',null=True, blank=True)
