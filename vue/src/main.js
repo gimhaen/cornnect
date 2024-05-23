@@ -9,6 +9,8 @@ import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { faFilm } from "@fortawesome/free-solid-svg-icons";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { faComment } from "@fortawesome/free-solid-svg-icons";
 
 import App from "./App.vue";
 import router from "./router";
@@ -19,6 +21,8 @@ library.add(faHouse);
 library.add(faFilm);
 library.add(faPencil);
 library.add(faUser);
+library.add(faThumbsUp);
+library.add(faComment);
 
 const app = createApp(App);
 const pinia = createPinia();

@@ -38,10 +38,6 @@
       </div>
       <SearchBoxOffice v-show="!showResults" class="box-office" />
     </div>
-
-    <div class="talk-list-nav">
-      <TalkList />
-    </div>
   </div>
 </template>
 

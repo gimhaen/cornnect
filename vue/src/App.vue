@@ -28,6 +28,6 @@ main {
   margin-left: 130px;
   flex: 1; /* 남은 영역을 모두 차지하도록 설정 */
   padding: 0;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
 }
 </style>

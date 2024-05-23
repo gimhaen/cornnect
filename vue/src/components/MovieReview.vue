@@ -3,7 +3,7 @@
     <div v-if="filterReviews.length === 0">
       <p>No reviews found.</p>
     </div>
-    <div v-else>
+    <div class="movie-review-container" v-else>
       <MovieReviewItem
         v-for="(review, index) in filterReviews"
         :key="index"
@@ -36,6 +36,17 @@ const filterReviews = computed(() => {
     (review) => review.movie.tmdb_id == route.params.tmdb_id
   );
   console.log(filteredReviews);
-  return filteredReviews;
+  return filteredReviews.sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
 });
 </script>
+
+<style>
+  .movie-review-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+</style>

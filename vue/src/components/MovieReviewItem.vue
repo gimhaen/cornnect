@@ -37,18 +37,14 @@
             class="post-img"
           />
           <div class="post-actions">
-            <img
-              src="@/assets/자기 전 치이카와.png"
-              alt="like img"
-              class="post-icon-img"
-            />
-            <span class="post-icon-content">좋아요 n</span>
-            <img
-              src="@/assets/자기 전 치이카와.png"
-              alt="comment img"
-              class="post-icon-img"
-            />
-            <span class="post-icon-content">댓글 n</span>
+            <button class="icon-button">
+              <font-awesome-icon icon="thumbs-up" />
+            </button>
+            <span class="post-icon-content">좋아요</span>
+            <button class="icon-button">
+              <font-awesome-icon icon="comment" />
+            </button>
+            <span class="post-icon-content">댓글</span>
           </div>
         </div>
       </div>
@@ -182,5 +178,13 @@ h4 {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: #999;
 }
 </style>

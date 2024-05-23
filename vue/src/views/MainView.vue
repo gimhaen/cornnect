@@ -30,7 +30,7 @@ import MAinInfoNav from "@/components/MainInfoNav.vue";
 
 .article-list {
   padding: 20px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   max-width: 600px;
   width: 100%;
 }
