@@ -8,5 +8,8 @@ urlpatterns = [
     path('reviews/', views.reviews, name="reviews"),
     path('search/', views.search, name='search'),
     path('<int:tmdb_id>/', views.movie_detail, name="movie_detail"),
+    path('<int:tmdb_id>/talks/', views.talks, name="talks"),
+    path('<int:tmdb_id>/talk/<int:talk_id>/', views.talk_delete, name="talk_delete"),
+    path('<int:tmdb_id>/talk/create/', views.talk_create, name="talk_create"),
     path('popular_movies/', views.popular_movies, name="popular_movies"),
 ]

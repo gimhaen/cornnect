@@ -12,8 +12,8 @@ class Movie(models.Model):
     director = models.ForeignKey('Director', on_delete=models.CASCADE, related_name='movies', null=True, blank=True)
     actors = models.ManyToManyField('Actor', related_name='movies', null=True, blank=True)
     poster_image = models.CharField(max_length=300)
-    # likes_count = models.IntegerField(default=0)
-    # talks_count = models.IntegerField(default=0)
+    likes_count = models.IntegerField(default=0)
+    talks_count = models.IntegerField(default=0)
     def __str__(self):
         return self.title
     
@@ -39,19 +39,19 @@ class Genre(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100, unique=True)
 
-class MovieTalk(models.Model):
+class Talk(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='talks')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='talks')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.movie.title}"
 
 
 class MovieTalkReply(models.Model):
-    movie_talk = models.ForeignKey(MovieTalk, on_delete=models.CASCADE, related_name='replies')
+    movie_talk = models.ForeignKey(Talk, on_delete=models.CASCADE, related_name='replies')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='replies')
     content = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -61,7 +61,7 @@ class MovieTalkReply(models.Model):
 
 
 class MovieTalkLike(models.Model):
-    movie_talk = models.ForeignKey(MovieTalk, on_delete=models.CASCADE, related_name='likes')
+    movie_talk = models.ForeignKey(Talk, on_delete=models.CASCADE, related_name='likes')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
     created_at = models.DateTimeField(auto_now_add=True)
 

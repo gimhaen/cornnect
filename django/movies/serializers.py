@@ -1,6 +1,6 @@
 # movies/serializers.py
 from rest_framework import serializers
-from .models import Movie, Actor, Director, Genre, Review
+from .models import Movie, Actor, Director, Genre, Review, Talk
 from accounts.models import CustomUser
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -42,3 +42,24 @@ class ReviewSerialzer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['movie', 'review_image']
         
+class TalkSerializer(serializers.ModelSerializer):
+    class UserSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = CustomUser
+            fields = "__all__"
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Talk
+        fields = '__all__'
+        read_only_fields = ['movie', 'user']
+    # class UserSerializer(serializers.ModelSerializer):
+    #     class Meta:
+    #         model = CustomUser
+    #         fields = "__all__"
+        
+    # user = UserSerializer(read_only=True)
+    # movie = MovieSerializer(read_only=True)
+    # class Meta:
+    #     model = Talk
+    #     fields = '__all__'

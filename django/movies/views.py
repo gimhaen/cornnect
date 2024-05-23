@@ -113,6 +113,36 @@ def movie_detail(request, tmdb_id):
     detail_movie_data['detail_image'] = detail_image
     return JsonResponse(detail_movie_data, safe=False)
 
+@api_view(['POST'])
+def talk_create(request, tmdb_id):
+    print(tmdb_id)
+    movie = get_object_or_404(Movie, tmdb_id=tmdb_id)
+    serializer = TalkSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(movie=movie, user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def talk_delete(request, tmdb_id, talk_id):
+    print('DELETE')
+    print(tmdb_id)
+    print(talk_id)
+    movie = get_object_or_404(Movie, tmdb_id=tmdb_id)
+    talk = get_object_or_404(Talk, id=talk_id, movie=movie)
+    if talk.user != request.user:
+        return Response({'error': 'You are not allowed to delete this talk.'}, status=status.HTTP_403_FORBIDDEN)
+    talk.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def talks(request, tmdb_id):
+    print(tmdb_id)
+    movie = get_object_or_404(Movie, tmdb_id=tmdb_id)
+    talks = movie.talks.all().order_by('-created_at')
+    serializer = TalkSerializer(talks, many=True)
+    return Response(serializer.data)
+
 ## 영화데이터 불러오기 함수
 def popular_movies(request) : 
     API_KEY = "68992e4014416feadeedd858d35551c8"
