@@ -37,7 +37,11 @@ const isSignUpRoute = route.name === "signup";
 
 const handleFormSubmit = () => {
   if (isSignUpRoute) {
-    store.signUp(username.value, password.value, password2.value);
+    store.signUp(username.value, password.value, password2.value).then(() => {
+      username.value = "";
+      password.value = "";
+      password2.value = "";
+    });
   } else {
     store.logIn(username.value, password.value);
   }

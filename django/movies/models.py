@@ -84,8 +84,6 @@ class Review(models.Model):
     rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     content = models.CharField(max_length=10000)
     review_image = models.ImageField(upload_to='movie_reviews/', blank=True, null=True)
-    # likes_count = models.IntegerField(default=0)
-    # comments_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

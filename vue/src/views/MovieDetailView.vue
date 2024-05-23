@@ -1,10 +1,14 @@
 <template>
   <div>
-    <header>
-      <img :src="movie.poster_image" alt="영화 포스터" />
+    <div>
+      <img
+        :src="movie.detail_image"
+        class="detail_image"
+        alt="영화 상세 페이지"
+      />
       <h1>{{ movie.title }}</h1>
       <p>{{ movie.description }}</p>
-    </header>
+    </div>
     <nav>
       <RouterLink :to="{ path: `/movie/${$route.params.tmdb_id}/review/` }"
         >리뷰</RouterLink
@@ -29,7 +33,6 @@ import { useMovieStore } from "@/stores/movie.js";
 const movieStore = useMovieStore();
 const route = useRoute();
 const movie = ref({});
-const tmdb_id = computed(() => route.params.tmdb_id);
 onMounted(() => {
   movieStore
     .movie_detail(route.params.tmdb_id)
@@ -43,12 +46,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.detail_image {
+  height: 500px;
+  width: auto;
+}
+
 header {
   text-align: center;
 }
-img {
-  max-width: 200px;
-}
+
 nav {
   display: flex;
   justify-content: center;

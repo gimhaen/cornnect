@@ -1,8 +1,35 @@
 <template>
-  <div v-if="articleStore.showModal" class="modal-overlay" @click.self="closeModal">
+  <div
+    v-if="articleStore.showModal"
+    class="modal-overlay"
+    @click.self="closeModal"
+  >
     <div class="modal-container">
-      <!-- <div class="modal-header">
-      </div> -->
+      <div class="modal-header">
+        <div class="search-input-container">
+          <input
+            v-model="searchTerm"
+            @input="onSearchInput"
+            @keyup.enter="searchMovies"
+            placeholder="영화제목, 배우, 감독 또는 장르를 입력하세요."
+            type="text"
+          />
+          <button class="search-button" @click="searchMovies">
+            <font-awesome-icon icon="search" />
+          </button>
+        </div>
+        <div v-if="showResults" class="search-results">
+          <ul>
+            <li
+              v-for="result in searchResults"
+              :key="result.id"
+              @click="selectSearchResult(result)"
+            >
+              {{ result.title }}
+            </li>
+          </ul>
+        </div>
+      </div>
       <button class="close-button" @click="closeModal">×</button>
       <div class="modal-content">
         <textarea
@@ -10,9 +37,11 @@
           placeholder="리뷰를 작성하세요..."
           class="input-content"
         ></textarea>
-        <input type="file" @change="handleImageChange"> <!-- 이미지 파일을 선택하는 input 추가 -->
-        <div v-if="previewImage" class="image-preview"> <!-- 미리보기를 표시할 요소 -->
-          <img :src="previewImage" alt="Preview">
+        <input type="file" @change="handleImageChange" />
+        <!-- 이미지 파일을 선택하는 input 추가 -->
+        <div v-if="previewImage" class="image-preview">
+          <!-- 미리보기를 표시할 요소 -->
+          <img :src="previewImage" alt="Preview" />
         </div>
         <div class="rating-container">
           <span class="rating-label">별점:</span>
@@ -21,8 +50,13 @@
               v-for="(star, index) in 5"
               :key="index"
               @click="setRating(index + 1)"
-              :class="{ 'filled': index < Math.floor(rating) || (index === Math.floor(rating) && rating % 1 !== 0) }"
-            >★</span>
+              :class="{
+                filled:
+                  index < Math.floor(rating) ||
+                  (index === Math.floor(rating) && rating % 1 !== 0),
+              }"
+              >★</span
+            >
           </div>
           <button @click="submitPost" class="submit-button">Post</button>
         </div>
@@ -32,28 +66,64 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useArticleStore } from '@/stores/article.js';
-import { useAuthStore } from '@/stores/auth.js';
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useArticleStore } from "@/stores/article.js";
+import { useAuthStore } from "@/stores/auth.js";
+import { useMovieStore } from "@/stores/movie.js";
 
 const articleStore = useArticleStore();
 const authStore = useAuthStore();
 
-const content = ref('');
-const rating = ref(5);
+//// 영화 찾기
+const movieStore = useMovieStore();
+const searchTerm = ref("");
+const showResults = ref(false);
+const searchResults = computed(() => {
+  // showResults.value = true;
+  return movieStore.movies
+    .filter((movie) =>
+      movie.title.toLowerCase().includes(searchTerm.value.toLowerCase())
+    )
+    .slice(0, 5);
+});
+const router = useRouter();
+
+const onSearchInput = () => {
+  if (searchTerm.value.trim() !== "") {
+    // 검색어와 일치하는 영화 제목을 찾아서 검색 결과로 설정합니다.
+    movieStore.search(searchTerm.value.trim());
+    showResults.value = true;
+  } else {
+    searchResults.value = []; // 검색어가 없으면 검색 결과를 초기화합니다.
+    showResults.value = false;
+  }
+};
+
+const selectSearchResult = (result) => {
+  // 사용자가 선택한 검색 결과를 입력란에 설정하고 검색 결과를 숨깁니다.
+  searchTerm.value = result.title;
+  showResults.value = false;
+  // 검색 결과를 선택했을 때 검색 결과를 초기화합니다.
+  searchResults.value = [];
+};
+
+//// 리뷰 작성
+const content = ref("");
+const rating = ref(3);
 const previewImage = ref(null); // 이미지 미리보기를 위한 상태 추가
-const imageFile = ref(null)
+const imageFile = ref(null);
 const closeModal = () => {
-  rating.value = 5
-  content.value = ""
-  previewImage.value = null
-  imageFile.value = null
+  rating.value = 3;
+  content.value = "";
+  previewImage.value = null;
+  imageFile.value = null;
   articleStore.closeModal();
 };
 
 const handleImageChange = (event) => {
   const file = event.target.files[0];
-  imageFile.value = file
+  imageFile.value = file;
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
@@ -64,15 +134,16 @@ const handleImageChange = (event) => {
 };
 
 const submitPost = () => {
- 
-  console.log(rating.value, content.value, imageFile.value)
-  const movie_id = 1
-  articleStore.writeReview(movie_id, rating.value, content.value, imageFile.value)
- 
-  closeModal()
+  console.log(rating.value, content.value, imageFile.value);
+  const movie_id = 1;
+  articleStore.writeReview(
+    movie_id,
+    rating.value,
+    content.value,
+    imageFile.value
+  );
 
-
-
+  closeModal();
 };
 
 const setRating = (value) => {

@@ -1,22 +1,21 @@
 # movies/views.py
 import requests
 import pprint
-from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser
-
 
 from django.conf import settings
 from django.http import JsonResponse
-from django.db.models import Q, Case, When, Value, IntegerField
-from django.shortcuts import render, get_object_or_404
-from django.views.decorators.csrf import csrf_protect
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
+from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.response import Response
 
 from .models import *
 from .serializers import *
 
+## 메인
 # 박스오피스
 @api_view(['GET'])
 def box_office(request):
@@ -32,33 +31,9 @@ def box_office(request):
     data = response.json()
     return JsonResponse(data)
 
-# 영화 검색 
-def search(request):
-    if request.method == 'GET':
-        search_term = request.GET.get('searchTerm', '')
-        search_results = Movie.objects.filter(
-    Q(title__icontains=search_term) |
-    Q(actors__name__icontains=search_term) |
-    Q(director__name__icontains=search_term) |
-    Q(genres__name__icontains=search_term),
-    # tmdb_id__in=Movie.objects.values('tmdb_id')
-).distinct()[:50]
-       
-        
-        serializer = MovieSerializer(search_results, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    else:
-        return JsonResponse({'error': 'POST 요청이 필요합니다.'}, status=400)
 
-# 영화 상세
 
-def movie_detail(request, tmdb_id):
-    print('-')
-    movie = get_object_or_404(Movie, tmdb_id=tmdb_id)
-    print(movie)
-    serializer = MovieSerializer(movie)
-    return JsonResponse(serializer.data, safe=False)
-
+# 리뷰 생성
 @api_view(['GET', 'POST'])
 @parser_classes([MultiPartParser, FormParser])
 def review_create(request, movie_id):
@@ -78,7 +53,7 @@ def review_create(request, movie_id):
 
     return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+# 리뷰 조희
 @api_view(['GET'])
 def reviews(request):
     reviews = Review.objects.all()
@@ -86,6 +61,9 @@ def reviews(request):
     
     return Response(serialzer.data)
 
+
+
+## 영화
 # 영화 검색 
 def search(request):
     if request.method == 'GET':
@@ -105,13 +83,35 @@ def search(request):
         return JsonResponse({'error': 'POST 요청이 필요합니다.'}, status=400)
 
 # 영화 상세
-
 def movie_detail(request, tmdb_id):
-    print('-')
     movie = get_object_or_404(Movie, tmdb_id=tmdb_id)
-    print(movie)
     serializer = MovieSerializer(movie)
-    return JsonResponse(serializer.data, safe=False)
+    # pprint.pprint(serializer.data)
+    # print(serializer.data['tmdb_id'])
+    tmdb_id = serializer.data['tmdb_id']
+    # 상세 이미지 가져오기
+    API_KEY = "68992e4014416feadeedd858d35551c8"
+    headers = {
+    "accept": "application/json",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2ODk5MmU0MDE0NDE2ZmVhZGVlZGQ4NThkMzU1NTFjOCIsInN1YiI6IjY2MzVkZDBhMzU4ZGE3MDEyNzU1Yjk4ZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ZunSOFVvloD2rKBlNBjxl0yNl6VEzYh3TTCMJH4omA0"
+    }
+    
+    detail_img_url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/images"
+    detail_img_params = {"api_key": API_KEY}
+    detail_img_response = requests.get(detail_img_url, headers=headers, params=detail_img_params).json()
+    # pprint.pprint(detail_img_response['backdrops'][0]['file_path'])
+    detail_img = detail_img_response['backdrops'][0]['file_path']
+    
+    # 포스터 이미지 URL 추출
+    if 'backdrops' in detail_img_response and len(detail_img_response['backdrops']) > 0:
+        detail_image = f"https://image.tmdb.org/t/p/original{detail_img}"
+    else:
+        detail_image = None
+    
+    # 영화 데이터에 이미지 URL 추가
+    detail_movie_data = serializer.data
+    detail_movie_data['detail_image'] = detail_image
+    return JsonResponse(detail_movie_data, safe=False)
 
 ## 영화데이터 불러오기 함수
 def popular_movies(request) : 

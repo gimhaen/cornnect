@@ -10,7 +10,7 @@ export const useMovieStore = defineStore("movie", () => {
   const authStore = useAuthStore();
 
   const search = function (searchText) {
-    axios({
+    return axios({
       method: "get",
       url: "http://127.0.0.1:8000/movies/search/",
       params: {
