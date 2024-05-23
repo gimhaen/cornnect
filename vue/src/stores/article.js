@@ -45,19 +45,30 @@ export const useArticleStore = defineStore(
         });
     };
 
-    const writeReview = function (movie_id, rating, content, imageFile) {
+    const writeReview = function (tmdb_id, rating, content, imageFile) {
       console.log(`Token ${authStore.token}`);
       console.log(rating);
       console.log(content);
+      console.log(tmdb_id);
+
       const formData = new FormData();
+
+      formData.append("tmdb_id", tmdb_id);
       formData.append("rating", rating);
       formData.append("content", content);
       formData.append("review_image", imageFile);
+
       console.log("write");
       console.log(formData);
+
+      console.log("FormData entries:");
+      for (const entry of formData.entries()) {
+        console.log(entry);
+      }
+
       return axios({
         method: "post",
-        url: `http://127.0.0.1:8000/movies/${movie_id}/review/`,
+        url: `http://127.0.0.1:8000/movies/${tmdb_id}/review/`,
         headers: {
           Authorization: `Token ${authStore.token}`,
           "Content-Type": "multipart/form-data", // 파일 업로드를 위해 Content-Type 설정

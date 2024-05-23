@@ -16,6 +16,7 @@
   })
   const content = ref('')
   const createTalk = async () => {
+    console.log(props.tmdb_id);
     try {
         await store.talkCreate(props.tmdb_id, content.value);
         content.value = ''; // Clear the input after submitting

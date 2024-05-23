@@ -5,15 +5,23 @@ import PiniaPluginPersistedState from "pinia-plugin-persistedstate";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import { faFilm } from "@fortawesome/free-solid-svg-icons";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
-import App from './App.vue'
-import router from './router'
+import App from "./App.vue";
+import router from "./router";
 
 // 사용할 아이콘을 라이브러리에 추가
 library.add(faSearch);
+library.add(faHouse);
+library.add(faFilm);
+library.add(faPencil);
+library.add(faUser);
 
-const app = createApp(App)
-const pinia = createPinia()
+const app = createApp(App);
+const pinia = createPinia();
 
 // 전역으로 등록
 app.component("font-awesome-icon", FontAwesomeIcon);

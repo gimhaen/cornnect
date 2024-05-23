@@ -7,7 +7,7 @@ import { ref } from "vue";
 export const useTalkStore = defineStore(
   "talk",
   () => {
-    const token = useAuthStore().token;
+    const userStore = useAuthStore();
     const postStore = useArticleStore();
     const talks = ref([])
     const getTalks = async (tmdb_id) => {
@@ -16,7 +16,7 @@ export const useTalkStore = defineStore(
           `http://127.0.0.1:8000/movies/${tmdb_id}/talks/`,
           {
             headers: {
-                Authorization: `Token ${token}`,
+                Authorization: `Token ${userStore.token}`,
             },
             }
         );
@@ -29,14 +29,13 @@ export const useTalkStore = defineStore(
     };
 
     const talkCreate = async (tmdb_id, content) => {
-        
       try {
         const response = await axios.post(
           `http://127.0.0.1:8000/movies/${tmdb_id}/talk/create/`,
           { content },
           {
             headers: {
-              Authorization: `Token ${token}`,
+              Authorization: `Token ${userStore.token}`,
             },
           }
         );
@@ -52,7 +51,7 @@ export const useTalkStore = defineStore(
       try {
         await axios.delete(`http://127.0.0.1:8000/movies/${tmdb_id}/talk/${talk_id}/`, {
           headers: {
-            Authorization: `Token ${token}`,
+            Authorization: `Token ${userStore.token}`,
           },
         });
         postStore.detailPost.talks = postStore.detailPost.talks.filter(

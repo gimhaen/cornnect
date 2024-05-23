@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-// import WriteModal from "@/components/WritePage.vue";
+// import WriteModal from "@/components/MainWritePage.vue";
 import MainList from "@/components/MainList.vue";
 import MAinInfoNav from "@/components/MainInfoNav.vue";
 </script>

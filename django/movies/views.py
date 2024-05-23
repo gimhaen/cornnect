@@ -36,9 +36,9 @@ def box_office(request):
 # 리뷰 생성
 @api_view(['GET', 'POST'])
 @parser_classes([MultiPartParser, FormParser])
-def review_create(request, movie_id):
+def review_create(request, tmdb_id):
     # print('dd')
-    movie = Movie.objects.get(pk=movie_id)
+    movie = Movie.objects.get(tmdb_id=tmdb_id)
     print(movie)
     if request.method == 'GET' :
         print(movie.review_set.all())
@@ -46,6 +46,7 @@ def review_create(request, movie_id):
     elif request.method == 'POST' :
         # print('22')
         # print(request.FILES.get('review_image'))
+        # tmdb_id = Review.movie.tmdb_id
         serialzer = ReviewSerialzer(data=request.data)
         if serialzer.is_valid(raise_exception=True):
             serialzer.save(movie=movie, user=request.user, review_image=request.FILES.get('review_image'))

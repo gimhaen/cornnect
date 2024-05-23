@@ -9,9 +9,9 @@ import UserView from "@/views/UserView.vue";
 import SignUpView from "@/views/SignUpView.vue";
 import LogInView from "@/views/LogInView.vue";
 import { useAuthStore } from "@/stores/auth.js";
-import { createApp } from 'vue'
-import BoxOffice from '@/components/BoxOffice.vue'
-import WritePage from '@/components/WritePage.vue'
+import { createApp } from "vue";
+import BoxOffice from "@/components/BoxOffice.vue";
+import MainWritePage from "@/components/MainWritePage.vue";
 
 // const app = createApp({})
 // app.component('BoxOffice', BoxOffice)
@@ -21,52 +21,51 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'main',
-      component: MainView
+      path: "/",
+      name: "main",
+      component: MainView,
     },
     {
-      path: '/search/',
-      name: 'search',
-      component: SearchView
+      path: "/search/",
+      name: "search",
+      component: SearchView,
     },
     {
-      path: '/user',
-      name: 'user',
-      component: UserView
-      
+      path: "/user",
+      name: "user",
+      component: UserView,
     },
     {
-      path: '/box-office',
-      name: 'box-office',
-      component: BoxOffice
+      path: "/box-office",
+      name: "box-office",
+      component: BoxOffice,
     },
     {
-      path: '/review-write',
-      name: 'write-page',
-      component: WritePage
+      path: "/review-write",
+      name: "write-page",
+      component: MainWritePage,
     },
     {
-      path: '/signup',
-      name: 'signup',
+      path: "/signup",
+      name: "signup",
       component: SignUpView,
       beforeEnter: (to, from) => {
-        const store = useAuthStore()
+        const store = useAuthStore();
         if (store.isAuthenticated) {
-          return { name: 'main' }
+          return { name: "main" };
         }
-      }
+      },
     },
     {
-      path: '/login',
-      name: 'login',
+      path: "/login",
+      name: "login",
       component: LogInView,
       beforeEnter: (to, from) => {
-        const store = useAuthStore()
+        const store = useAuthStore();
         if (store.isAuthenticated) {
-          return { name: 'main' }
+          return { name: "main" };
         }
-      }
+      },
     },
     {
       path: "/movie/:tmdb_id",
@@ -88,4 +87,4 @@ const router = createRouter({
 //   }
 // })
 
-export default router
+export default router;

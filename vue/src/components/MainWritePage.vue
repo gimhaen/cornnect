@@ -6,17 +6,23 @@
   >
     <div class="modal-container">
       <div class="modal-header">
+        <div class="modal-subheader">
+          <div class="review-header">
+            <p>리뷰쓰기</p>
+          </div>
+          <div class="close-button-container">
+            <button class="close-button" @click="closeModal">×</button>
+          </div>
+        </div>
         <div class="search-input-container">
           <input
-            v-model="searchTerm"
+            :value="searchTerm"
             @input="onSearchInput"
             @keyup.enter="searchMovies"
             placeholder="영화제목, 배우, 감독 또는 장르를 입력하세요."
             type="text"
+            class="search-input"
           />
-          <button class="search-button" @click="searchMovies">
-            <font-awesome-icon icon="search" />
-          </button>
         </div>
         <div v-if="showResults" class="search-results">
           <ul>
@@ -30,17 +36,14 @@
           </ul>
         </div>
       </div>
-      <button class="close-button" @click="closeModal">×</button>
       <div class="modal-content">
         <textarea
           v-model="content"
-          placeholder="리뷰를 작성하세요..."
+          placeholder="재미있게 보셨나요? 작품에 대한 리뷰를 자유롭게 남겨주세요."
           class="input-content"
         ></textarea>
         <input type="file" @change="handleImageChange" />
-        <!-- 이미지 파일을 선택하는 input 추가 -->
         <div v-if="previewImage" class="image-preview">
-          <!-- 미리보기를 표시할 요소 -->
           <img :src="previewImage" alt="Preview" />
         </div>
         <div class="rating-container">
@@ -58,7 +61,7 @@
               >★</span
             >
           </div>
-          <button @click="submitPost" class="submit-button">Post</button>
+          <button @click="submitPost" class="submit-button">작성하기</button>
         </div>
       </div>
     </div>
@@ -75,12 +78,12 @@ import { useMovieStore } from "@/stores/movie.js";
 const articleStore = useArticleStore();
 const authStore = useAuthStore();
 
-//// 영화 찾기
 const movieStore = useMovieStore();
 const searchTerm = ref("");
 const showResults = ref(false);
+const tmdb_id = ref(null);
+
 const searchResults = computed(() => {
-  // showResults.value = true;
   return movieStore.movies
     .filter((movie) =>
       movie.title.toLowerCase().includes(searchTerm.value.toLowerCase())
@@ -89,31 +92,30 @@ const searchResults = computed(() => {
 });
 const router = useRouter();
 
-const onSearchInput = () => {
+const onSearchInput = (event) => {
+  searchTerm.value = event.target.value;
   if (searchTerm.value.trim() !== "") {
-    // 검색어와 일치하는 영화 제목을 찾아서 검색 결과로 설정합니다.
     movieStore.search(searchTerm.value.trim());
     showResults.value = true;
   } else {
-    searchResults.value = []; // 검색어가 없으면 검색 결과를 초기화합니다.
     showResults.value = false;
   }
 };
 
 const selectSearchResult = (result) => {
-  // 사용자가 선택한 검색 결과를 입력란에 설정하고 검색 결과를 숨깁니다.
   searchTerm.value = result.title;
   showResults.value = false;
-  // 검색 결과를 선택했을 때 검색 결과를 초기화합니다.
-  searchResults.value = [];
+  tmdb_id.value = result.tmdb_id;
+  // console.log(result.tmdb_id);
+  // console.log("이게뭐야이게뭐야");
 };
 
-//// 리뷰 작성
 const content = ref("");
 const rating = ref(3);
-const previewImage = ref(null); // 이미지 미리보기를 위한 상태 추가
+const previewImage = ref(null);
 const imageFile = ref(null);
 const closeModal = () => {
+  tmdb_id.value = null;
   rating.value = 3;
   content.value = "";
   previewImage.value = null;
@@ -127,22 +129,20 @@ const handleImageChange = (event) => {
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
-      previewImage.value = reader.result; // 선택된 이미지를 미리보기에 표시
+      previewImage.value = reader.result;
     };
     reader.readAsDataURL(file);
   }
 };
 
 const submitPost = () => {
-  console.log(rating.value, content.value, imageFile.value);
-  const movie_id = 1;
   articleStore.writeReview(
-    movie_id,
+    tmdb_id.value,
     rating.value,
     content.value,
     imageFile.value
   );
-
+  // console.log(tmdb_id.value);
   closeModal();
 };
 
@@ -152,6 +152,8 @@ const setRating = (value) => {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -175,9 +177,32 @@ const setRating = (value) => {
 
 .modal-header {
   display: flex;
-  justify-content: flex-end;
-  padding: 10px;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px 10px 10px;
   border-bottom: 1px solid #e6e6e6;
+  position: relative;
+}
+
+.modal-subheader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.review-header {
+  width: 100%;
+  text-align: center;
+}
+
+.review-header p {
+  margin: 10px 0px;
+}
+.close-button-container {
+  text-align: right;
+  padding-right: 15px;
 }
 
 .close-button {
@@ -187,8 +212,62 @@ const setRating = (value) => {
   cursor: pointer;
 }
 
+.search-input-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.search-input {
+  width: calc(100% - 40px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+  font-size: 16px;
+}
+
+.search-button {
+  width: 40px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0 0 4px 4px;
+  z-index: 1001;
+}
+
+.search-results ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.search-results li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-results li:hover {
+  background-color: #f0f0f0;
+}
+
 .modal-content {
-  padding: 20px;
+  padding: 15px 20px 5px;
 }
 
 .input-title,
@@ -227,10 +306,11 @@ const setRating = (value) => {
 
 .rating-label {
   margin-right: 10px;
+  text-align: bottom;
 }
 
 .rating-stars {
-  color: #fff88f; /* Yellow color for stars */
+  color: #fff88f;
 }
 
 .rating-stars span {
@@ -239,10 +319,19 @@ const setRating = (value) => {
 }
 
 .rating-stars span.filled {
-  color: #ffbb00; /* Filled star color */
+  color: #ffbb00;
 }
 
-/* .image-preview {
+.image-preview {
+  display: flex;
   justify-content: center;
-} */
+  margin-bottom: 10px;
+}
+
+.image-preview img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 </style>

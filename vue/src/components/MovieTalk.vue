@@ -4,8 +4,9 @@
     <ul  class="talk-list">
       <TalkList
         v-for="talk in talks"
-        :key="talk.id"
+        :talk_id="talk.id"
         :talk="talk"
+        :tmdb_id="tmdb_id"
       />
     </ul>
   </div>

@@ -7,7 +7,6 @@
         alt="영화 상세 페이지"
       />
       <h1>{{ movie.title }}</h1>
-      <p>{{ movie.description }}</p>
     </div>
     <nav>
       <RouterLink :to="{ path: `/movie/${$route.params.tmdb_id}/review/` }"
@@ -47,8 +46,8 @@ onMounted(() => {
 
 <style scoped>
 .detail_image {
-  height: 500px;
-  width: auto;
+  height: auto;
+  width: 100%;
 }
 
 header {

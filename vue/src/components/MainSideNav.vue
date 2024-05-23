@@ -1,15 +1,30 @@
 <template>
   <nav class="nav-ver">
     <div class="container-nav">
-      <RouterLink :to="{ name: 'main' }" class="nav-link">
-        <img src="@/assets/뛰는 치이카와.png" alt="cornnect_logo" class="nav-logo">
+      <RouterLink :to="{ name: 'main' }" class="nav-link logo-link">
+        <div class="nav-logo pacifico-regular">cornnect</div>
       </RouterLink>
-      <RouterLink :to="{ name: 'main' }" class="nav-link">홈</RouterLink>
-      <RouterLink :to="{ name: 'search' }" class="nav-link">검색</RouterLink>
-      <RouterLink to="/" class="nav-link">위시리스트</RouterLink>
+      <RouterLink :to="{ name: 'main' }" class="nav-link">
+        <!-- <button class="search-button" @click="searchMovies"> -->
+        <button class="icon-button">
+          <font-awesome-icon icon="house" />
+        </button>
+      </RouterLink>
+      <RouterLink :to="{ name: 'search' }" class="nav-link">
+        <button class="icon-button">
+          <font-awesome-icon icon="search" />
+        </button>
+      </RouterLink>
+      <RouterLink to="/" class="nav-link">
+        <button class="icon-button">
+          <font-awesome-icon icon="film" />
+        </button>
+      </RouterLink>
     </div>
 
-    <button class="write-button" @click="openModal">작성하기</button>
+    <button class="write-button icon-button" @click="openModal">
+      <font-awesome-icon icon="pencil" />
+    </button>
 
     <div class="user-nav">
       <div v-if="!isAuthenticated">
@@ -17,11 +32,34 @@
       </div>
       <div v-else>
         <div class="profile-nav">
-          <a href="#" @click.prevent="profileDropdown" class="nav-link">프로필</a>
+          <a href="#" @click.prevent="profileDropdown" class="nav-link">
+            <div v-if="user.profile_pic">
+              <img
+                :src="'http://127.0.0.1:8000' + user.profile_pic"
+                alt="user img"
+                class="user-img"
+              />
+              <!-- <p class="user-username">{{ user.username }}</p> -->
+            </div>
+            <button v-if="!user.profile_pic" class="icon-button">
+              <font-awesome-icon icon="user" />
+            </button>
+          </a>
           <div v-if="profileShowDropdown" class="profile-menu">
             <!-- <RouterLink :to="{ name: 'user' }" @click.prevent="profileDropdown" class="profile-dropdown-item">상세 프로필</RouterLink> -->
-            <a href="#" class="profile-button profile-dropdown-item" @click="profileOpenModal">프로필 수정</a>
-            <a href="#" @click="logOut" @click.prevent="profileDropdown" class="profile-dropdown-item">Logout</a>
+            <a
+              href="#"
+              class="profile-button profile-dropdown-item"
+              @click="profileOpenModal"
+              >프로필 수정</a
+            >
+            <a
+              href="#"
+              @click="logOut"
+              @click.prevent="profileDropdown"
+              class="profile-dropdown-item"
+              >Logout</a
+            >
           </div>
         </div>
         <!-- <a href="#" @click="logOut" class="nav-link">Logout</a>
@@ -32,7 +70,7 @@
     </div>
     <div>
       <!-- 별점 관련 코드 -->
-      <!-- <WritePage v-if="showModal" @close="closeModal" :movie="movie"/> -->
+      <!-- <MainWritePage v-if="showModal" @close="closeModal" :movie="movie"/> -->
       <!-- 별점 관련 코드 -->
     </div>
   </nav>
@@ -42,7 +80,7 @@
 // import { RouterView, RouterLink } from 'vue-router'
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-// import WritePage from "@/components/WritePage.vue";
+// import MainWritePage from "@/components/MainWritePage.vue";
 import { useArticleStore } from "@/stores/article.js";
 import { useAuthStore } from "@/stores/auth";
 
@@ -52,9 +90,10 @@ const router = useRouter();
 
 // 모달 열고 닫는 showModal
 // const showModal = ref(false);
-const profileShowDropdown = ref(false)
+const profileShowDropdown = ref(false);
 
 const isAuthenticated = computed(() => authStore.isAuthenticated);
+const user = computed(() => authStore.user);
 
 // 클릭시 모달 열리는 함수
 const openModal = () => {
@@ -63,11 +102,11 @@ const openModal = () => {
 
 const profileOpenModal = () => {
   authStore.showModal = true;
-}
+};
 
 const profileDropdown = () => {
-  profileShowDropdown.value = !profileShowDropdown.value
-}
+  profileShowDropdown.value = !profileShowDropdown.value;
+};
 
 const logOut = () => {
   authStore.logOut();
@@ -76,6 +115,19 @@ const logOut = () => {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+
+.pacifico-regular {
+  font-family: "Pacifico", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.nav-logo {
+  font-size: 25px; /* 글꼴 크기 조정 */
+  color: #000; /* 글꼴 색상 조정 */
+}
+
 .nav-ver {
   position: fixed; /* 고정 위치 설정 */
   width: 80px; /* 세로 너비의 20%로 설정 */
@@ -95,12 +147,17 @@ const logOut = () => {
   flex-direction: column;
 }
 
-.nav-logo {
-  width: 100px;
+.nav-link {
+  margin-bottom: 30px;
+  text-decoration: none; /* 밑줄 제거 */
 }
 
-.nav-link {
-  margin-bottom: 20px;
+.nav-link.logo-link {
+  text-decoration: none; /* 로고 링크 밑줄 제거 */
+}
+
+.nav-link.logo-link:hover .nav-logo {
+  text-decoration: none; /* 로고 링크 호버 시에도 밑줄 제거 */
 }
 
 .write-button {
@@ -137,5 +194,22 @@ const logOut = () => {
 
 .profile-dropdown-item:hover {
   background-color: #f0f0f0;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 27px;
+  color: #999;
+}
+
+.user-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 10px;
+  margin-bottom: auto;
+  margin-top: 10px;
 }
 </style>
