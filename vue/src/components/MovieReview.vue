@@ -27,15 +27,15 @@ const reviews = computed(() => {
   return articleStore.reviews;
 });
 
-onMounted(()=> {
-  console.log('dd')
-  console.log(route.params.tmdb_id)
-})
+onMounted(() => {
+  console.log("dd");
+  console.log(route.params.tmdb_id);
+});
 const filterReviews = computed(() => {
   const filteredReviews = [...reviews.value].filter(
     (review) => review.movie.tmdb_id == route.params.tmdb_id
   );
-  console.log(filteredReviews)
+  console.log(filteredReviews);
   return filteredReviews;
 });
 </script>

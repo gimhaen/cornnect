@@ -23,11 +23,6 @@
               <p class="post-time">{{ formatDate(review.created_at) }}</p>
             </div>
             <div class="rating-movie">
-              <div class="rating-movie-title">
-                <p>
-                  {{ review.movie.title }}
-                </p>
-              </div>
               <div class="rating-stars">
                 <span v-for="n in review.rating" :key="n">★</span>
               </div>
